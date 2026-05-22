@@ -1,377 +1,762 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Roundtable Sidebar — Mockup</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sporty's VFR Mastery – Roundtable AI Prototype</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-         background: #f0f2f5; min-height: 100vh; display: flex; flex-direction: column; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f6f9; color: #1a2b3c; min-width: 320px; }
 
-  /* Top nav */
-  .topnav { background: white; border-bottom: 1px solid #dde2ea;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 20px; height: 52px; flex-shrink: 0; }
-  .topnav-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 17px; color: #1a3860; }
-  .topnav-logo svg { width: 28px; height: 28px; }
-  .topnav-links { display: flex; gap: 28px; font-size: 13px; color: #444; }
-  .topnav-right { display: flex; align-items: center; gap: 14px; }
-  .avatar { width: 30px; height: 30px; background: #1a3860; border-radius: 50%;
-    color: white; font-size: 12px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center; }
-  .fav-btn { font-size: 12px; color: #666; border: 1px solid #ddd; padding: 4px 10px;
-    border-radius: 6px; background: white; }
+  nav { background: #1a3557; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; height: 52px; }
+  nav .logo { color: white; font-weight: 700; font-size: 16px; letter-spacing: 1px; }
+  nav .nav-links { display: flex; gap: 16px; }
+  nav .nav-links a { color: #c8d8e8; text-decoration: none; font-size: 13px; }
 
-  /* Layout */
-  .layout { display: flex; flex: 1; }
+  .breadcrumb { background: white; padding: 8px 20px; font-size: 12px; color: #6b7f92; border-bottom: 1px solid #e2e8f0; }
+  .breadcrumb span { color: #1a3557; font-weight: 600; }
 
-  /* Left nav */
-  .sidebar { width: 200px; background: #1a3860; color: white; flex-shrink: 0;
-    display: flex; flex-direction: column; font-size: 13px; padding: 16px 0; }
-  .sidebar-logo { padding: 0 16px 16px; border-bottom: 1px solid rgba(255,255,255,.1); margin-bottom: 12px; }
-  .sidebar-logo img { width: 140px; }
-  .sidebar-logo-text { font-weight: 800; font-size: 15px; color: white; letter-spacing: -.3px; }
-  .sidebar-logo-sub { font-size: 10px; color: rgba(255,255,255,.45); text-transform: uppercase; letter-spacing: 1px; }
-  .sidebar-item { display: flex; align-items: center; gap: 8px;
-    padding: 8px 16px; color: rgba(255,255,255,.7); font-size: 12px; }
-  .sidebar-item.active { background: rgba(255,255,255,.12); color: white; }
-  .sidebar-item svg { width: 14px; height: 14px; flex-shrink: 0; }
-  .sidebar-divider { height: 1px; background: rgba(255,255,255,.1); margin: 8px 0; }
-  .prog-section { padding: 12px 16px; margin-top: auto; }
-  .prog-label { font-size: 10px; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 8px; }
-  .prog-bar-bg { background: rgba(255,255,255,.12); border-radius: 3px; height: 5px; margin-bottom: 6px; }
-  .prog-bar-fill { background: #f0a500; height: 5px; border-radius: 3px; width: 33%; }
-  .prog-text { font-size: 11px; color: rgba(255,255,255,.5); }
+  .steps-bar { background: white; padding: 14px 12px 0; border-bottom: 1px solid #e2e8f0; overflow-x: auto; }
+  .steps { display: flex; align-items: flex-start; min-width: 560px; }
+  .step { display: flex; flex-direction: column; align-items: center; flex: 1; }
+  .step-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; margin-bottom: 5px; border: 2px solid transparent; flex-shrink: 0; }
+  .step.done .step-circle { background: #1a3557; color: white; }
+  .step.active .step-circle { background: #1a3557; color: white; border: 3px solid #f0a500; box-shadow: 0 0 0 3px #fff8ec; }
+  .step.future .step-circle { background: #dce6ef; color: #8a9bb0; }
+  .step-label { font-size: 9px; font-weight: 700; letter-spacing: 0.5px; color: #8a9bb0; padding-bottom: 10px; text-align: center; }
+  .step.done .step-label, .step.active .step-label { color: #1a3557; }
+  .step-connector { flex: 1; height: 2px; background: #dce6ef; margin-top: 17px; flex-shrink: 0; min-width: 8px; }
+  .step-connector.done { background: #1a3557; }
 
-  /* Main area */
-  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .scenario-bar { background: white; padding: 10px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #e2e8f0; }
+  .back-btn { color: #1a3557; font-size: 20px; font-weight: 300; }
+  .scenario-name { font-size: 15px; font-weight: 700; color: #1a3557; }
 
-  /* Scenario header */
-  .scenario-header { background: white; border-bottom: 1px solid #dde2ea;
-    padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; }
-  .breadcrumb-path { font-size: 11.5px; color: #888; }
-  .scenario-title { font-size: 14px; font-weight: 700; color: #1a3860; margin-top: 2px; }
-  .fav-link { font-size: 12px; color: #888; display: flex; align-items: center; gap: 5px; }
+  /* DEMO CONTROLS */
+  .demo-bar { background: #1a2b3c; padding: 10px 20px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .demo-label { color: #8a9bb0; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; flex-shrink: 0; }
+  .demo-btn { background: #2a4060; color: #c8d8e8; border: 1px solid #3a5070; border-radius: 6px; padding: 5px 12px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .demo-btn:hover { background: #f0a500; color: white; border-color: #f0a500; }
+  .demo-btn.active { background: #f0a500; color: white; border-color: #f0a500; }
 
-  /* Progress steps */
-  .steps-bar { background: white; border-bottom: 1px solid #e8edf3; padding: 12px 24px; }
-  .steps { display: flex; align-items: center; gap: 0; }
-  .step { display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; flex: 1; }
-  .step:not(:last-child)::after { content: ''; position: absolute; top: 14px; left: 50%; width: 100%;
-    height: 1.5px; background: #d0d8e4; z-index: 0; }
-  .step.done:not(:last-child)::after { background: #1a3860; }
-  .step-circle { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #d0d8e4;
-    background: white; display: flex; align-items: center; justify-content: center;
-    font-size: 10px; color: #999; z-index: 1; position: relative; }
-  .step.done .step-circle { background: #1a3860; border-color: #1a3860; color: white; }
-  .step.active .step-circle { background: #1a3860; border-color: #1a3860; color: white;
-    box-shadow: 0 0 0 3px rgba(26,56,96,.2); }
-  .step-label { font-size: 9.5px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: .5px; }
-  .step.done .step-label, .step.active .step-label { color: #1a3860; }
-  .step-arrow { font-size: 16px; color: #f0a500; margin-bottom: 12px; }
+  .main { display: grid; grid-template-columns: 1fr; gap: 20px; padding: 20px; }
+  @media (min-width: 860px) { .main { grid-template-columns: 1fr 330px; padding: 24px 28px; } }
 
-  /* Content area */
-  .content-area { flex: 1; display: flex; gap: 0; overflow: hidden; }
+  .section-title { font-size: 20px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #1a3557; margin-bottom: 3px; }
+  .section-sub { font-size: 13px; color: #6b7f92; margin-bottom: 18px; }
 
-  /* Audio player panel */
-  .audio-panel { flex: 1; padding: 28px 28px 28px 24px; overflow-y: auto; }
-  .listen-title { font-size: 18px; font-weight: 800; color: #1a3860; letter-spacing: .5px; margin-bottom: 4px; }
-  .listen-sub { font-size: 13px; color: #777; margin-bottom: 20px; }
+  .player-wrap { background: #1a2b3c; border-radius: 32px; padding: 16px 24px; margin-bottom: 16px; }
+  .progress-bar-wrap { position: relative; margin-bottom: 6px; cursor: pointer; }
+  .progress-track { height: 5px; background: #3a4f63; border-radius: 3px; position: relative; }
+  .progress-fill { height: 5px; background: #f0a500; border-radius: 3px; width: 0%; position: relative; transition: width 0.4s; }
+  .progress-thumb { width: 13px; height: 13px; background: #f0a500; border-radius: 50%; position: absolute; right: -6px; top: -4px; }
 
-  .player { background: #0f1c2e; border-radius: 12px; padding: 16px 20px; margin-bottom: 18px; }
-  .player-bar-bg { background: rgba(255,255,255,.15); border-radius: 3px; height: 4px; margin-bottom: 12px; }
-  .player-bar-fill { background: #f0a500; height: 4px; border-radius: 3px; width: 35%; }
-  .player-controls { display: flex; align-items: center; justify-content: space-between; }
-  .player-time { font-size: 12px; color: rgba(255,255,255,.6); }
-  .player-btns { display: flex; align-items: center; gap: 16px; }
-  .player-speed { font-size: 12px; color: rgba(255,255,255,.7); background: rgba(255,255,255,.1);
-    padding: 3px 7px; border-radius: 4px; }
-  .player-icon { color: rgba(255,255,255,.7); font-size: 18px; }
-  .player-play { width: 36px; height: 36px; background: white; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center; font-size: 14px; }
-  .player-vol { color: rgba(255,255,255,.7); font-size: 16px; }
+  /* TRIGGER DOTS on progress bar */
+  .trigger-dot { position: absolute; width: 8px; height: 8px; background: white; border-radius: 50%; top: -1.5px; transform: translateX(-50%); opacity: 0.6; }
 
-  .player-actions { display: flex; gap: 10px; margin-bottom: 20px; }
-  .pdf-btn { background: #f0a500; color: #1a3860; border: none; font-weight: 700;
-    font-size: 12px; padding: 7px 14px; border-radius: 6px; cursor: pointer; }
-  .mp3-btn { background: transparent; color: #4a7fc1; border: 1px solid #c8d8ee;
-    font-size: 12px; padding: 7px 14px; border-radius: 6px; cursor: pointer; }
+  .time-row { display: flex; justify-content: space-between; color: #8a9bb0; font-size: 11px; margin-bottom: 12px; }
+  .controls { display: flex; align-items: center; justify-content: center; gap: 20px; }
+  .speed-btn { color: #c8d8e8; font-size: 12px; font-weight: 700; background: none; border: none; cursor: pointer; }
+  .skip-btn { color: #c8d8e8; font-size: 18px; background: none; border: none; cursor: pointer; }
+  .play-btn { width: 48px; height: 48px; border-radius: 50%; background: #f0a500; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; flex-shrink: 0; }
+  .vol-btn { color: #c8d8e8; font-size: 16px; background: none; border: none; cursor: pointer; }
 
-  .instructors { display: flex; flex-wrap: wrap; gap: 14px; }
-  .instructor { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-  .instructor-avatar { width: 44px; height: 44px; border-radius: 50%; background: #1a3860;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700; color: white; border: 2px solid transparent; }
-  .instructor-avatar.moderator { border-color: #f0a500; }
-  .instructor-name { font-size: 10px; color: #555; text-align: center; line-height: 1.3; max-width: 52px; }
-  .instructor-choice { font-size: 9.5px; color: #4a7fc1; font-weight: 600; text-align: center; }
+  .action-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .btn-summary { background: #f0a500; color: white; border: none; border-radius: 20px; padding: 8px 18px; font-size: 12px; font-weight: 700; cursor: pointer; }
+  .btn-mp3 { background: none; color: #1a3557; border: none; font-size: 12px; text-decoration: underline; cursor: pointer; }
 
-  /* Sidebar panel */
-  .sidebar-panel { width: 320px; flex-shrink: 0; background: #f5f7fb;
-    border-left: 1px solid #dde6f2; display: flex; flex-direction: column; overflow-y: auto; }
+  .now-playing { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6b7f92; margin-bottom: 16px; min-height: 20px; }
+  .pulse { width: 8px; height: 8px; background: #f0a500; border-radius: 50%; animation: pulse 1.2s infinite; flex-shrink: 0; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
 
-  .panel-header { padding: 14px 16px; border-bottom: 1px solid #dde6f2;
-    background: white; display: flex; align-items: center; justify-content: space-between; }
-  .panel-title { font-size: 12px; font-weight: 700; color: #1a3860; text-transform: uppercase; letter-spacing: .5px; }
-  .new-pill { background: #1a3860; color: #f0a500; font-size: 9px; font-weight: 700;
-    padding: 2px 7px; border-radius: 20px; letter-spacing: .3px; }
+  .instructors-label { font-size: 11px; font-weight: 700; color: #8a9bb0; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+  .instructors { display: flex; flex-wrap: wrap; gap: 12px; }
+  .instructor { display: flex; flex-direction: column; align-items: center; gap: 5px; width: 70px; }
+  .instructor-avatar { width: 50px; height: 50px; border-radius: 50%; background: #1a3557; color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; border: 2px solid #1a3557; }
+  .instructor.moderator .instructor-avatar { border-color: #f0a500; border-width: 3px; }
+  .instructor-name { font-size: 9px; font-weight: 700; text-align: center; color: #1a3557; line-height: 1.2; }
+  .instructor-choice { font-size: 9px; color: #f0a500; font-weight: 700; }
 
-  .panel-body { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+  /* SIDEBAR */
+  .sidebar { display: flex; flex-direction: column; gap: 14px; }
 
-  /* Active card */
-  .card { background: white; border-radius: 10px; border: 1.5px solid #dde6f2;
-    overflow: hidden; box-shadow: 0 2px 8px rgba(26,56,96,.08); }
-  .card-tag { display: flex; align-items: center; gap: 6px;
-    padding: 9px 14px; border-bottom: 1px solid #f0f3f8;
-    font-size: 10.5px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: .5px; }
-  .card-dot { width: 8px; height: 8px; border-radius: 50%; }
-  .card-dot.poll { background: #f0a500; }
-  .card-dot.exam { background: #2563eb; }
-  .card-dot.ntsb { background: #c0392b; }
+  /* EMPTY STATE */
+  .sidebar-empty { background: white; border-radius: 12px; padding: 28px 20px; text-align: center; border: 2px dashed #dce6ef; }
+  .sidebar-empty-title { font-size: 12px; font-weight: 600; color: #8a9bb0; margin-bottom: 16px; }
+  .sidebar-empty-dots { display: flex; justify-content: center; gap: 16px; margin-top: 4px; flex-wrap: wrap; }
+  .dot-preview { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .dot-circle { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-label { font-size: 9px; color: #8a9bb0; font-weight: 600; }
+
+  /* CARDS — hidden by default, animate in */
+  .sidebar-card { background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); border-left: 4px solid #1a3557; display: none; animation: slideIn 0.4s ease; position: relative; }
+  .sidebar-card.visible { display: block; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes slideOut { from { opacity: 1; transform: translateY(0); max-height: 600px; } to { opacity: 0; transform: translateY(-8px); max-height: 0; padding: 0; margin: 0; } }
+  .sidebar-card.dismissing { animation: slideOut 0.3s ease forwards; overflow: hidden; }
+
+  /* DISMISS BUTTON */
+  .dismiss-btn { position: absolute; top: 10px; right: 12px; background: none; border: none; color: #b0bec5; font-size: 18px; cursor: pointer; line-height: 1; padding: 2px 4px; border-radius: 4px; transition: color 0.15s; }
+  .dismiss-btn:hover { color: #1a2b3c; }
+
+  /* DISMISSED PILL — shows card can be brought back */
+  .dismissed-pill { display: none; background: white; border-radius: 8px; padding: 8px 14px; border: 1.5px dashed #dce6ef; cursor: pointer; transition: border-color 0.2s; }
+  .dismissed-pill:hover { border-color: #8a9bb0; }
+  .dismissed-pill.visible { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .pill-label { font-size: 11px; color: #8a9bb0; font-weight: 600; }
+  .pill-reopen { font-size: 10px; color: #1a3557; font-weight: 700; text-decoration: underline; }
+
+  .sidebar-card.poll { border-left-color: #f0a500; }
+  .sidebar-card.ntsb { border-left-color: #c0392b; }
+  .sidebar-card.minimums { border-left-color: #27ae60; }
+  .sidebar-card.context { border-left-color: #0891b2; }
+  .card-tag.context { color: #0891b2; }
   .card-dot.context { background: #0891b2; }
+  .context-fact { background: #f0f9ff; border-radius: 7px; padding: 10px 12px; border-left: 3px solid #0891b2; }
+  .context-fact-text { font-size: 12px; color: #1a2b3c; line-height: 1.6; }
+  .sidebar-card.funfact { border-left-color: #8e44ad; }
+
+  /* CARD DOT */
+  .card-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 5px; flex-shrink: 0; }
+  .card-dot.poll { background: #f0a500; }
+  .card-dot.examq { background: #2563eb; }
+  .card-dot.ntsb { background: #c0392b; }
   .card-dot.minimums { background: #27ae60; }
-  .card-body { padding: 14px; }
-  .card-question { font-size: 14px; font-weight: 600; color: #1a3860; margin-bottom: 14px; line-height: 1.4; }
 
-  /* Slider */
-  .slider-wrap { margin-bottom: 12px; }
-  .slider-labels { display: flex; justify-content: space-between; font-size: 10px; color: #888; margin-bottom: 6px; }
-  .slider { width: 100%; height: 4px; border-radius: 2px; accent-color: #f0a500;
-    background: linear-gradient(to right, #f0a500 60%, #e0e0e0 60%); }
-  .slider-val { text-align: center; font-size: 20px; font-weight: 800; color: #1a3860; margin: 10px 0; }
+  .card-tag { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+  .card-tag.poll { color: #f0a500; }
+  .card-tag.ntsb { color: #c0392b; }
+  .card-tag.minimums { color: #27ae60; }
+  .card-tag.funfact { color: #8e44ad; }
 
-  .submit-btn { width: 100%; background: #f0a500; color: #1a3860; border: none;
-    font-weight: 700; font-size: 13px; padding: 9px; border-radius: 7px; cursor: pointer; }
+  .timestamp-badge { display: inline-block; background: #1a2b3c; color: #f0a500; font-size: 9px; font-weight: 700; border-radius: 4px; padding: 2px 6px; margin-bottom: 6px; font-family: monospace; }
+  .card-title { font-size: 13px; font-weight: 700; color: #1a2b3c; margin-bottom: 6px; line-height: 1.4; }
+  .card-body { font-size: 12px; color: #4a5f72; line-height: 1.5; }
 
-  /* Collapsed pill cards */
-  .pill-card { background: white; border: 1.5px solid #dde6f2; border-radius: 8px;
-    padding: 10px 14px; display: flex; align-items: center; justify-content: space-between;
-    opacity: .7; }
-  .pill-left { display: flex; align-items: center; gap: 8px; }
-  .pill-label { font-size: 12px; font-weight: 600; color: #555; }
-  .pill-time { font-size: 11px; color: #aaa; }
-  .pill-expand { font-size: 16px; color: #bbb; }
+  .poll-submit { background: #f0a500; color: white; border: none; border-radius: 7px; padding: 8px; font-size: 12px; font-weight: 700; cursor: pointer; width: 100%; }
 
-  /* Upcoming */
-  .upcoming { padding: 10px 14px; }
-  .upcoming-label { font-size: 10px; font-weight: 700; color: #aaa; text-transform: uppercase;
-    letter-spacing: .5px; margin-bottom: 8px; }
-  .upcoming-item { display: flex; align-items: center; gap: 8px; padding: 6px 0;
-    border-bottom: 1px solid #eef0f4; }
-  .upcoming-dot { width: 7px; height: 7px; border-radius: 50%; background: #d0d8e4; flex-shrink: 0; }
-  .upcoming-text { font-size: 11.5px; color: #888; }
-  .upcoming-time { font-size: 10.5px; color: #bbb; margin-left: auto; }
+  /* COMFORT SLIDER */
+  .slider-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .slider-labels { display: flex; justify-content: space-between; font-size: 10px; color: #8a9bb0; }
+  .comfort-slider { -webkit-appearance: none; width: 100%; height: 5px; border-radius: 3px; background: linear-gradient(to right, #f0a500 50%, #e2e8f0 50%); outline: none; cursor: pointer; }
+  .comfort-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #f0a500; border: 2px solid white; box-shadow: 0 1px 4px rgba(0,0,0,0.2); cursor: pointer; }
+  .slider-val-row { text-align: center; }
+  .slider-val-display { font-size: 20px; font-weight: 800; color: #1a3557; }
+  .comfort-results { display: none; flex-direction: column; gap: 6px; }
+  .comfort-avg-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+  .comfort-avg-label { color: #6b7f92; }
+  .comfort-avg-num { font-size: 16px; font-weight: 800; color: #1a3557; }
+  .comfort-dist-label { font-size: 10px; font-weight: 700; color: #8a9bb0; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 4px; }
+  .comfort-dist { display: flex; align-items: flex-end; gap: 3px; height: 40px; margin-top: 4px; }
+  .comfort-bar { flex: 1; background: #dce6ef; border-radius: 2px 2px 0 0; transition: height 0.6s ease; }
+  .comfort-bar.yours { background: #f0a500; }
+
+  .poll-results { display: none; flex-direction: column; gap: 7px; margin-top: 8px; }
+  .result-row { display: flex; flex-direction: column; gap: 3px; }
+  .result-label { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; color: #1a2b3c; }
+  .result-bar-track { height: 7px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+  .result-bar-fill { height: 7px; border-radius: 4px; background: #1a3557; transition: width 1s ease; width: 0; }
+  .result-bar-fill.highlight { background: #f0a500; }
+  .result-note { font-size: 10px; color: #6b7f92; margin-top: 4px; font-style: italic; }
+
+  .ntsb-report { background: #fdf0ef; border-radius: 7px; padding: 10px; margin: 8px 0; }
+  .ntsb-headline { font-size: 11px; font-weight: 700; color: #c0392b; margin-bottom: 3px; }
+  .ntsb-detail { font-size: 11px; color: #4a5f72; line-height: 1.4; }
+  .ntsb-link { font-size: 11px; color: #c0392b; text-decoration: underline; cursor: pointer; margin-top: 5px; display: block; }
+
+  .minimums-prompt { background: #f0faf4; border-radius: 7px; padding: 10px; margin: 8px 0; font-size: 12px; color: #1a6b3c; line-height: 1.5; font-style: italic; }
+  .minimums-input { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 7px; padding: 8px 10px; font-size: 12px; color: #1a2b3c; resize: none; height: 65px; font-family: inherit; margin-top: 6px; }
+  .minimums-input:focus { outline: none; border-color: #27ae60; }
+  .minimums-save { background: #27ae60; color: white; border: none; border-radius: 7px; padding: 7px 14px; font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 7px; }
+  .saved-badge { display: none; background: #27ae60; color: white; border-radius: 5px; padding: 3px 8px; font-size: 10px; font-weight: 700; margin-left: 8px; }
+
+  /* EXAM QUESTIONS CARD */
+  .sidebar-card.examq { border-left-color: #2563eb; }
+  .card-tag.examq { color: #2563eb; }
+  .exam-question { background: #eff6ff; border-radius: 7px; padding: 10px 12px; margin: 8px 0; border-left: 3px solid #2563eb; }
+  .exam-q-text { font-size: 12px; font-weight: 600; color: #1a2b3c; line-height: 1.5; margin-bottom: 8px; }
+  .exam-options { display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; }
+  .exam-option { font-size: 11px; color: #4a5f72; padding: 3px 0; cursor: pointer; display: flex; align-items: flex-start; gap: 6px; }
+  .exam-option input { accent-color: #2563eb; margin-top: 2px; flex-shrink: 0; }
+  .exam-option.correct-ans { color: #27ae60; font-weight: 700; }
+  .exam-acs { font-size: 9px; font-weight: 700; color: #2563eb; letter-spacing: 0.5px; background: #dbeafe; border-radius: 3px; padding: 2px 6px; display: inline-block; margin-top: 2px; }
+  .exam-missed-badge { display: none; }
+  .exam-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .exam-nav-btn { background: none; border: 1.5px solid #dce6ef; border-radius: 6px; padding: 4px 10px; font-size: 11px; color: #4a5f72; cursor: pointer; }
+  .exam-nav-btn:hover { border-color: #2563eb; color: #2563eb; }
+  .exam-counter { font-size: 11px; color: #8a9bb0; }
+
+  /* TV APP NOTE */
+  .tv-app-note { display: none; background: rgba(255,255,255,0.07); border-radius: 6px; padding: 8px 12px; font-size: 11px; color: #8a9bb0; margin-top: 10px; }
+
+  /* ======== NOTIFICATION TOAST ======== */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1a3557; color: white; padding: 10px 20px; border-radius: 24px; font-size: 13px; font-weight: 600; box-shadow: 0 4px 20px rgba(0,0,0,0.3); transition: transform 0.3s ease; z-index: 100; white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ======== QUICK SUMMARY MODAL ======== */
+  .summary-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 500; align-items: center; justify-content: center; padding: 20px; }
+  .summary-overlay.open { display: flex; }
+  .summary-modal { background: white; border-radius: 14px; max-width: 580px; width: 100%; max-height: 85vh; overflow-y: auto; padding: 32px; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+  .summary-close { position: absolute; top: 16px; right: 16px; background: #f4f6f9; border: none; border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; color: #4a5f72; }
+  .summary-head { font-size: 22px; font-weight: 800; color: #1a3557; letter-spacing: 0.5px; }
+  .summary-sub { font-size: 12px; color: #8a9bb0; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 24px; margin-top: 2px; }
+  .summary-section { margin-bottom: 20px; }
+  .summary-section-title { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #f0a500; margin-bottom: 8px; }
+  .summary-section p { font-size: 13px; color: #4a5f72; line-height: 1.6; }
+  .summary-option { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: #4a5f72; margin-bottom: 6px; line-height: 1.4; }
+  .summary-opt-num { background: #f4f6f9; border-radius: 4px; padding: 2px 7px; font-size: 11px; font-weight: 700; color: #8a9bb0; flex-shrink: 0; }
+  .summary-opt-num.recommended { background: #f0faf4; color: #27ae60; }
+  .summary-list { padding-left: 16px; }
+  .summary-list li { font-size: 13px; color: #4a5f72; line-height: 1.6; margin-bottom: 6px; }
 </style>
 </head>
 <body>
 
-<nav class="topnav">
-  <div class="topnav-logo">
-    <svg viewBox="0 0 28 28" fill="none">
-      <rect width="28" height="28" rx="4" fill="#1a3860"/>
-      <path d="M6 18 L14 8 L22 18" stroke="#f0a500" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      <path d="M10 18.5 L18 18.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-    </svg>
-    Sporty's
-  </div>
-  <div class="topnav-links">
-    <span>My Courses</span><span>All Courses</span><span>Learn To Fly</span>
-  </div>
-  <div class="topnav-right">
-    <span class="fav-btn">☆ Favorite this Scenario</span>
-    <div class="avatar">EP</div>
-  </div>
+<nav>
+  <div class="logo">&#x2708; SPORTY'S</div>
+  <div class="nav-links"><a href="#">My Courses</a><a href="#">All Courses</a><a href="#">Learn To Fly</a></div>
 </nav>
 
-<div class="layout">
+<div class="breadcrumb">VFR Mastery / Scenarios / <span>Gulf Coast Gauntlet</span></div>
 
-  <!-- Left sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-logo" style="padding:16px;">
-      <div class="sidebar-logo-text">VFR Mastery</div>
-      <div class="sidebar-logo-sub">by PilotWorkshops</div>
-    </div>
-    <div class="sidebar-item active">
-      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 5h8M4 8h6M4 11h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-      View All Scenarios
-    </div>
-    <div class="sidebar-item">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2l1.5 3 3.5.5-2.5 2.5.5 3.5L8 10l-3 1.5.5-3.5L3 5.5l3.5-.5z"/></svg>
-      Favorite Scenarios
-    </div>
-    <div class="sidebar-item">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
-      Mastery Watchlist
-    </div>
-    <div class="sidebar-divider"></div>
-    <div class="prog-section">
-      <div class="prog-label">Scenario Progress</div>
-      <div class="prog-bar-bg"><div class="prog-bar-fill"></div></div>
-      <div class="prog-text">1 / 94 scenarios</div>
-    </div>
-  </aside>
+<div class="steps-bar">
+  <div class="steps">
+    <div class="step done"><div class="step-circle">&#x1F441;</div><div class="step-label">WATCH</div></div>
+    <div class="step-connector done"></div>
+    <div class="step done"><div class="step-circle">&#x229E;</div><div class="step-label">EVALUATE</div></div>
+    <div class="step-connector done"></div>
+    <div class="step done"><div class="step-circle">&#x2611;</div><div class="step-label">CHOOSE</div></div>
+    <div class="step-connector done"></div>
+    <div class="step done"><div class="step-circle">&#x1F4D6;</div><div class="step-label">LEARN</div></div>
+    <div class="step-connector done"></div>
+    <div class="step active"><div class="step-circle">&#x1F3A7;</div><div class="step-label">LISTEN</div></div>
+    <div class="step-connector"></div>
+    <div class="step future"><div class="step-circle">&#x1F4AC;</div><div class="step-label">DISCUSS</div></div>
+    <div class="step-connector"></div>
+    <div class="step future"><div class="step-circle">&#x2753;</div><div class="step-label">QUIZ</div></div>
+    <div class="step-connector"></div>
+    <div class="step future"><div class="step-circle">&#x1F3C1;</div><div class="step-label">FINISH</div></div>
+  </div>
+</div>
 
-  <!-- Main -->
-  <div class="main">
-    <!-- Scenario header -->
-    <div class="scenario-header">
+<div class="scenario-bar">
+  <span class="back-btn">&#x2039;</span>
+  <div class="scenario-name">Gulf Coast Gauntlet</div>
+</div>
+
+<!-- DEMO JUMP CONTROLS -->
+<div class="demo-bar">
+  <span class="demo-label">Demo jumps &rarr;</span>
+  <button class="demo-btn" onclick="jumpTo(0)" id="demoBtn0">Start (0:00)</button>
+  <button class="demo-btn" onclick="jumpTo(432)" id="demoBtn1">7:12 &mdash; Panel splits on the decision</button>
+  <button class="demo-btn" onclick="jumpTo(720)" id="demoBtn2">12:00 &mdash; Class B rules come up</button>
+  <button class="demo-btn" onclick="jumpTo(1060)" id="demoBtn3">17:40 &mdash; A real accident is surfaced</button>
+  <button class="demo-btn" onclick="jumpTo(1320)" id="demoBtn5">22:00 &mdash; About this aircraft</button>
+  <button class="demo-btn" onclick="jumpTo(1575)" id="demoBtn4">26:15 &mdash; Panel reaches conclusion</button>
+</div>
+
+<div class="main">
+
+  <!-- LEFT -->
+  <div class="left-panel">
+    <div class="section-title">5. Listen to the Roundtable</div>
+    <div class="section-sub">Listen in as our team of instructors discuss and debate the details of this scenario</div>
+
+    <div class="player-wrap">
+      <div class="progress-bar-wrap" onclick="scrubTo(event)">
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill">
+            <div class="progress-thumb"></div>
+          </div>
+          <!-- trigger dots on scrubber -->
+          <div class="trigger-dot" style="left:22.3%" title="Poll at 7:12"></div>
+          <div class="trigger-dot" style="left:37.1%" title="Exam Questions at 12:00"></div>
+          <div class="trigger-dot" style="left:54.6%" title="NTSB at 17:40"></div>
+          <div class="trigger-dot" style="left:68.0%" title="Context at 22:00"></div>
+          <div class="trigger-dot" style="left:81.2%" title="Minimums at 26:15"></div>
+        </div>
+      </div>
+      <div class="time-row">
+        <span id="currentTime">0:00</span>
+        <span>32:20</span>
+      </div>
+      <div class="controls">
+        <button class="speed-btn">1x</button>
+        <button class="skip-btn" onclick="skip(-10)">&#x21BA;</button>
+        <button class="play-btn" onclick="togglePlay()" id="playBtn">&#x25B6;</button>
+        <button class="skip-btn" onclick="skip(10)">&#x21BB;</button>
+        <button class="vol-btn">&#x1F50A;</button>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-summary" onclick="showSummary()">QUICK SUMMARY (PDF)</button>
+      <button class="btn-mp3">Download MP3 Audio</button>
+    </div>
+
+    <div class="now-playing" id="nowPlaying">
+      <div class="pulse"></div>
+      <span id="nowPlayingText">Press play to begin</span>
+    </div>
+
+    <div class="instructors-label">Roundtable Participants</div>
+    <div class="instructors">
+      <div class="instructor">
+        <div class="instructor-avatar">CC</div>
+        <div class="instructor-name">CATHERINE CAVAGNARO</div>
+        <div class="instructor-choice">CHOICE 3</div>
+      </div>
+      <div class="instructor">
+        <div class="instructor-avatar">DG</div>
+        <div class="instructor-name">DAVID GAGLIARDI</div>
+        <div class="instructor-choice">CHOICE 2</div>
+      </div>
+      <div class="instructor">
+        <div class="instructor-avatar">BK</div>
+        <div class="instructor-name">BRET KOEBBE</div>
+        <div class="instructor-choice">CHOICE 3</div>
+      </div>
+      <div class="instructor">
+        <div class="instructor-avatar">WM</div>
+        <div class="instructor-name">WALLY MORAN</div>
+        <div class="instructor-choice">CHOICE 3</div>
+      </div>
+      <div class="instructor">
+        <div class="instructor-avatar">KP</div>
+        <div class="instructor-name">KEVIN PLANTE</div>
+        <div class="instructor-choice">CHOICE 2</div>
+      </div>
+      <div class="instructor">
+        <div class="instructor-avatar">ST</div>
+        <div class="instructor-name">STEVE TUPPER</div>
+        <div class="instructor-choice">CHOICE 3</div>
+      </div>
+      <div class="instructor moderator">
+        <div class="instructor-avatar">JVW</div>
+        <div class="instructor-name">JEFF VAN WEST</div>
+        <div class="instructor-choice">MODERATOR</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+
+    <!-- EMPTY STATE — shown before any card fires -->
+    <div class="sidebar-card visible" id="emptyState" style="border-left-color:#dce6ef; text-align:center; padding:28px 20px;">
+      <div class="sidebar-empty-title">Five moments flagged in this discussion</div>
+      <div style="display:flex; justify-content:center; gap:14px; margin-top:4px; flex-wrap:wrap;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <div style="width:10px;height:10px;border-radius:50%;background:#f0a500;"></div>
+          <div style="font-size:9px;color:#8a9bb0;font-weight:600;">7:12</div>
+          <div style="font-size:9px;color:#8a9bb0;">Poll</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <div style="width:10px;height:10px;border-radius:50%;background:#2563eb;"></div>
+          <div style="font-size:9px;color:#8a9bb0;font-weight:600;">12:00</div>
+          <div style="font-size:9px;color:#8a9bb0;">Exam Qs</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <div style="width:10px;height:10px;border-radius:50%;background:#c0392b;"></div>
+          <div style="font-size:9px;color:#8a9bb0;font-weight:600;">17:40</div>
+          <div style="font-size:9px;color:#8a9bb0;">NTSB</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <div style="width:10px;height:10px;border-radius:50%;background:#0891b2;"></div>
+          <div style="font-size:9px;color:#8a9bb0;font-weight:600;">22:00</div>
+          <div style="font-size:9px;color:#8a9bb0;">Context</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <div style="width:10px;height:10px;border-radius:50%;background:#27ae60;"></div>
+          <div style="font-size:9px;color:#8a9bb0;font-weight:600;">26:15</div>
+          <div style="font-size:9px;color:#8a9bb0;">Minimums</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 1: POLL (fires at 7:12 = 432s) -->
+    <div class="dismissed-pill" id="pillPoll" onclick="reopenCard('cardPoll','pillPoll')">
+      <span class="pill-label">Poll dismissed</span>
+      <span class="pill-reopen">Reopen</span>
+    </div>
+    <div class="sidebar-card poll" id="cardPoll">
+      <button class="dismiss-btn" onclick="dismissCard('cardPoll','pillPoll')" title="Dismiss">&times;</button>
+      <div class="card-tag poll"><span class="card-dot poll"></span>COMFORT CHECK</div>
+      <div class="timestamp-badge">@ 7:12 &mdash; panel splits on the decision</div>
+      <div class="card-title">How comfortable are you in these conditions?</div>
+      <div class="card-body" style="margin-bottom:14px;">1,500 ft ceiling &middot; 3 miles visibility &middot; building weather ahead &middot; Class B nearby. Rate your personal comfort level.</div>
+      <div class="slider-wrap" id="sliderWrap">
+        <div class="slider-labels">
+          <span>Not at all</span>
+          <span>Very comfortable</span>
+        </div>
+        <input type="range" class="comfort-slider" id="comfortSlider" min="1" max="10" value="5" oninput="updateSliderVal(this.value)">
+        <div class="slider-val-row">
+          <span class="slider-val-display" id="sliderValDisplay">5 / 10</span>
+        </div>
+        <button class="poll-submit" onclick="submitComfort()" style="margin-top:10px;">See How 3,214 Pilots Rated This &rarr;</button>
+      </div>
+      <div class="tv-app-note">Open the Sporty's app on your phone or tablet to rate your comfort</div>
+      <div class="comfort-results" id="comfortResults">
+        <div class="comfort-avg-row">
+          <span class="comfort-avg-label">Community average</span>
+          <span class="comfort-avg-num">3.8 / 10</span>
+        </div>
+        <div class="comfort-avg-row" id="yourRatingRow">
+          <span class="comfort-avg-label">Your rating</span>
+          <span class="comfort-avg-num" id="yourRatingDisplay">&mdash;</span>
+        </div>
+        <div class="comfort-dist-label">Distribution across 3,214 pilots</div>
+        <div class="comfort-dist" id="comfortDist"></div>
+        <div class="result-note" style="margin-top:8px;">Most pilots rated these conditions a 3 or below. The panel is discussing why.</div>
+      </div>
+    </div>
+
+    <!-- CARD 2: EXAM QUESTIONS (fires at 12:00 = 720s) -->
+    <div class="dismissed-pill" id="pillExamq" onclick="reopenCard('cardExamq','pillExamq')">
+      <span class="pill-label">Exam questions dismissed</span>
+      <span class="pill-reopen">Reopen</span>
+    </div>
+    <div class="sidebar-card examq" id="cardExamq">
+      <button class="dismiss-btn" onclick="dismissCard('cardExamq','pillExamq')" title="Dismiss">&times;</button>
+      <div class="card-tag examq"><span class="card-dot examq"></span>YOUR EXAM QUESTIONS</div>
+      <div class="timestamp-badge">@ 12:00 &mdash; Class B entry requirements discussed</div>
+      <div class="card-title">Questions on this topic</div>
+      <div class="card-body" style="margin-bottom:10px;">The panel just brought up Class B entry rules. Here are a few questions from the written test on this subject.</div>
+
+      <div class="exam-question" id="examQ1">
+        <div class="exam-q-text">A pilot wishing to operate in Class B airspace must:</div>
+        <div class="exam-options">
+          <label class="exam-option"><input type="radio" name="eq0" value="a"> Receive an ATC clearance before entering</label>
+          <label class="exam-option"><input type="radio" name="eq0" value="b"> Squawk 1200 and remain clear</label>
+          <label class="exam-option"><input type="radio" name="eq0" value="c"> File an IFR flight plan</label>
+        </div>
+        <div class="exam-acs">PA.I.G.K2 &mdash; Airspace</div>
+        <span class="exam-missed-badge">Missed twice</span>
+      </div>
+
+      <div class="exam-nav">
+        <button class="exam-nav-btn" onclick="showExamQ(currentExamQ - 1)">&larr; Prev</button>
+        <span class="exam-counter" id="examCounter">Question 1 of 3</span>
+        <button class="exam-nav-btn" onclick="showExamQ(currentExamQ + 1)">Next &rarr;</button>
+      </div>
+      <div class="tv-app-note">Answer these questions in the Sporty's app &mdash; answers sync to your study progress</div>
+    </div>
+
+    <!-- CARD 3: NTSB (fires at 17:40 = 1060s) -->
+    <div class="dismissed-pill" id="pillNtsb" onclick="reopenCard('cardNtsb','pillNtsb')">
+      <span class="pill-label">NTSB report dismissed</span>
+      <span class="pill-reopen">Reopen</span>
+    </div>
+    <div class="sidebar-card ntsb" id="cardNtsb">
+      <button class="dismiss-btn" onclick="dismissCard('cardNtsb','pillNtsb')" title="Dismiss">&times;</button>
+      <div class="card-tag ntsb"><span class="card-dot ntsb"></span>ACCIDENT REPORT</div>
+      <div class="timestamp-badge">@ 17:40 &mdash; instructor describes a fatal outcome</div>
+      <div class="card-title">A related accident from the NTSB database</div>
+      <div class="ntsb-report">
+        <div class="ntsb-headline">NTSB Report ERA17FA192</div>
+        <div class="ntsb-detail">A VFR pilot continued into deteriorating weather near Tampa Bay, descending below 500 ft AGL to stay clear of a 900-ft overcast. Aircraft struck terrain 6 miles east of KPIE. Pilot had 312 hours total time. Probable cause: continued VFR flight into IMC conditions.</div>
+        <a class="ntsb-link">Read full NTSB report &rarr;</a>
+      </div>
+      <div class="card-body">The conditions being discussed right now match this accident profile closely.</div>
+    </div>
+
+    <!-- CARD 5: FLIGHT CONTEXT (fires at 22:00 = 1320s) -->
+    <div class="dismissed-pill" id="pillContext" onclick="reopenCard('cardContext','pillContext')">
+      <span class="pill-label">Context dismissed</span>
+      <span class="pill-reopen">Reopen</span>
+    </div>
+    <div class="sidebar-card context" id="cardContext">
+      <button class="dismiss-btn" onclick="dismissCard('cardContext','pillContext')" title="Dismiss">&times;</button>
+      <div class="card-tag context"><span class="card-dot context"></span>FLIGHT CONTEXT</div>
+      <div class="timestamp-badge">@ 22:00 &mdash; about this aircraft</div>
+      <div class="card-title">About the CubCrafters NX Cub</div>
+      <div class="context-fact">
+        <div class="context-fact-text">Despite the name, the NX Cub shares almost nothing with a classic Piper Cub. It's built from carbon fiber and Kevlar, weighs under 1,000 lbs empty, and cruises at 130 knots — faster than many Cessna 172s. Most people are surprised when they hear that.</div>
+      </div>
+      <div class="context-fact" style="margin-top:8px;">
+        <div class="context-fact-text">The Gulf Coast between Fort Myers and Tampa sees more lightning strikes per square mile than almost anywhere in the continental U.S. The Florida peninsula acts as a natural heat engine — sea breezes collide inland and generate convective weather with remarkable regularity, especially in summer.</div>
+      </div>
+      <div class="tv-app-note">More context available in the Sporty's app</div>
+    </div>
+
+    <!-- CARD 4: PERSONAL MINIMUMS (fires at 26:15 = 1575s) -->
+    <div class="dismissed-pill" id="pillMinimums" onclick="reopenCard('cardMinimums','pillMinimums')">
+      <span class="pill-label">Minimums dismissed</span>
+      <span class="pill-reopen">Reopen</span>
+    </div>
+    <div class="sidebar-card minimums" id="cardMinimums">
+      <button class="dismiss-btn" onclick="dismissCard('cardMinimums','pillMinimums')" title="Dismiss">&times;</button>
+      <div class="card-tag minimums"><span class="card-dot minimums"></span>PERSONAL MINIMUMS</div>
+      <div class="timestamp-badge">@ 26:15 &mdash; panel reaching conclusion</div>
+      <div class="card-title">How does this apply to your flying?</div>
+      <div class="minimums-prompt">"If I'm VFR along the Gulf Coast and weather closes in ahead &mdash; what's my personal turnaround point? Ceiling? Visibility? Distance from a divert airport?"</div>
+      <textarea class="minimums-input" id="minimumsText" placeholder="e.g. My personal minimum is 3 miles visibility and 1,500 ft ceiling. If either drops below that, I'm landing immediately..."></textarea>
       <div>
-        <div class="breadcrumb-path">VFR Mastery / Scenarios / Gulf Coast Gauntlet / Listen</div>
-        <div class="scenario-title">Gulf Coast Gauntlet</div>
+        <button class="minimums-save" onclick="saveMinimums()">Save to My Pilot Profile &rarr;</button>
+        <span class="saved-badge" id="savedBadge">&#x2713; Saved</span>
       </div>
-      <div class="fav-link">☆ Favorite this Scenario</div>
+      <div class="tv-app-note">Type your personal minimums in the Sporty's app &mdash; saved to your pilot profile</div>
     </div>
 
-    <!-- Step progress -->
-    <div class="steps-bar">
-      <div class="steps">
-        <div class="step done"><div class="step-circle">✓</div><div class="step-label">Watch</div></div>
-        <div class="step done"><div class="step-circle">✓</div><div class="step-label">Evaluate</div></div>
-        <div class="step done"><div class="step-circle">✓</div><div class="step-label">Choose</div></div>
-        <div class="step done"><div class="step-circle">✓</div><div class="step-label">Learn</div></div>
-        <div class="step active"><div class="step-circle">5</div><div class="step-label">Listen</div></div>
-        <div class="step"><div class="step-circle">6</div><div class="step-label">Discuss</div></div>
-        <div class="step"><div class="step-circle">7</div><div class="step-label">Quiz</div></div>
-        <div class="step"><div class="step-circle">8</div><div class="step-label">Finish</div></div>
-      </div>
+  </div>
+</div>
+
+<!-- QUICK SUMMARY MODAL -->
+<div class="summary-overlay" id="summaryOverlay" onclick="closeSummary()">
+  <div class="summary-modal" onclick="event.stopPropagation()">
+    <button class="summary-close" onclick="closeSummary()">&#x2715; Close</button>
+    <div class="summary-head">Gulf Coast Gauntlet</div>
+    <div class="summary-sub">Quick Summary</div>
+    <div class="summary-section">
+      <div class="summary-section-title">The Situation</div>
+      <p>You're flying a CubCrafters NX Cub from 2J9 to KPGD, following the Gulf Coast. After nearly two hours of dodging showers, you reach the Tampa area with deteriorating visibility ahead. Tampa's Class B airspace sits between you and home. The only airport behind you is IFR in showers. Fuel: 4+ hours remaining.</p>
     </div>
-
-    <!-- Content: audio + sidebar -->
-    <div class="content-area">
-
-      <!-- Audio panel -->
-      <div class="audio-panel">
-        <div class="listen-title">5. LISTEN TO THE ROUNDTABLE</div>
-        <div class="listen-sub">Listen in as our team of instructors discuss and debate the details of this scenario.</div>
-
-        <div class="player">
-          <div class="player-bar-bg"><div class="player-bar-fill"></div></div>
-          <div class="player-controls">
-            <div class="player-time">7:12</div>
-            <div class="player-btns">
-              <div class="player-speed">1x</div>
-              <div class="player-icon">⟨⟨</div>
-              <div class="player-play">▶</div>
-              <div class="player-icon">⟩⟩</div>
-              <div class="player-vol">🔊</div>
-            </div>
-            <div class="player-time">32:30</div>
-          </div>
-        </div>
-
-        <div class="player-actions">
-          <button class="pdf-btn">Quick Summary (PDF)</button>
-          <button class="mp3-btn">Download MP3 Audio</button>
-        </div>
-
-        <div class="instructors">
-          <div class="instructor">
-            <div class="instructor-avatar">CC</div>
-            <div class="instructor-name">Catherine Cavagnaro</div>
-            <div class="instructor-choice">Choice 2</div>
-          </div>
-          <div class="instructor">
-            <div class="instructor-avatar">DG</div>
-            <div class="instructor-name">David Gagliardi</div>
-            <div class="instructor-choice">Choice 1</div>
-          </div>
-          <div class="instructor">
-            <div class="instructor-avatar">BK</div>
-            <div class="instructor-name">Bret Koebbe</div>
-            <div class="instructor-choice">Choice 3</div>
-          </div>
-          <div class="instructor">
-            <div class="instructor-avatar">WM</div>
-            <div class="instructor-name">Wally Moran</div>
-            <div class="instructor-choice">Choice 3</div>
-          </div>
-          <div class="instructor">
-            <div class="instructor-avatar">KP</div>
-            <div class="instructor-name">Kevin Plante</div>
-            <div class="instructor-choice">Choice 3</div>
-          </div>
-          <div class="instructor">
-            <div class="instructor-avatar">ST</div>
-            <div class="instructor-name">Steve Tupper</div>
-            <div class="instructor-choice">Choice 2</div>
-          </div>
-          <div class="instructor">
-            <div class="instructor-avatar moderator">JVW</div>
-            <div class="instructor-name">Jeff Van West</div>
-            <div class="instructor-choice">Moderator</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Interactive sidebar -->
-      <div class="sidebar-panel">
-        <div class="panel-header">
-          <div class="panel-title">Interactive Sidebar</div>
-          <div class="new-pill">✦ NEW</div>
-        </div>
-        <div class="panel-body">
-
-          <!-- Active card: Comfort Poll -->
-          <div class="card">
-            <div class="card-tag">
-              <div class="card-dot poll"></div>
-              COMFORT CHECK
-            </div>
-            <div class="card-body">
-              <div class="card-question">How comfortable are you flying VFR in these conditions?</div>
-              <div class="slider-wrap">
-                <div class="slider-labels"><span>Not at all</span><span>Very comfortable</span></div>
-                <input type="range" class="slider" min="1" max="10" value="6">
-                <div class="slider-val">6 / 10</div>
-              </div>
-              <button class="submit-btn">See how others responded →</button>
-            </div>
-          </div>
-
-          <!-- Collapsed cards -->
-          <div class="pill-card">
-            <div class="pill-left">
-              <div class="card-dot exam" style="width:8px;height:8px;border-radius:50%;"></div>
-              <div class="pill-label">Exam Questions</div>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <div class="pill-time">~14:00</div>
-              <div class="pill-expand">›</div>
-            </div>
-          </div>
-
-          <div class="pill-card">
-            <div class="pill-left">
-              <div class="card-dot ntsb" style="width:8px;height:8px;border-radius:50%;"></div>
-              <div class="pill-label">NTSB Report</div>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <div class="pill-time">~19:30</div>
-              <div class="pill-expand">›</div>
-            </div>
-          </div>
-
-          <!-- Upcoming -->
-          <div class="upcoming">
-            <div class="upcoming-label">Coming up</div>
-            <div class="upcoming-item">
-              <div class="upcoming-dot" style="background:#0891b2;"></div>
-              <div class="upcoming-text">Flight Context</div>
-              <div class="upcoming-time">~24:00</div>
-            </div>
-            <div class="upcoming-item">
-              <div class="upcoming-dot" style="background:#27ae60;"></div>
-              <div class="upcoming-text">Personal Minimums</div>
-              <div class="upcoming-time">~29:00</div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
+    <div class="summary-section">
+      <div class="summary-section-title">Your Options</div>
+      <div class="summary-option"><span class="summary-opt-num">1</span>Fly under the Class B shelf and press on toward KPGD</div>
+      <div class="summary-option"><span class="summary-opt-num">2</span>Call Tampa Approach, request Class B clearance, and proceed</div>
+      <div class="summary-option"><span class="summary-opt-num recommended">&#x2713;</span>Land at the nearest airport and wait for conditions to improve</div>
+      <div class="summary-option"><span class="summary-opt-num">4</span>Circle in the current area and wait for weather to pass</div>
+    </div>
+    <div class="summary-section">
+      <div class="summary-section-title">What the Experts Said</div>
+      <p>The panel split between requesting Class B clearance and landing &mdash; both were considered acceptable. The consensus: with fuel available and an instrument rating in your pocket, there is no reason to duck under the shelf in deteriorating conditions. Options 2 and 3 both keep you safe. Option 1 does not.</p>
+    </div>
+    <div class="summary-section">
+      <div class="summary-section-title">Key Takeaways</div>
+      <ul class="summary-list">
+        <li>Your instrument rating is a tool &mdash; use it. Requesting Class B clearance gives you radar separation in conditions where you need it.</li>
+        <li>Fuel is time. With 4+ hours remaining, there is no pressure to press on. Land and wait.</li>
+        <li>The ceiling and visibility at decision time were marginal VFR at best. Descending further to stay clear of clouds compounds the risk.</li>
+      </ul>
     </div>
   </div>
 </div>
 
+<div class="toast" id="toast"></div>
+
+<script>
+  let playing = false;
+  let currentSeconds = 0;
+  const totalSeconds = 1940;
+  let timer;
+
+  // Which cards have been shown
+  const shown = { cardPoll: false, cardExamq: false, cardNtsb: false, cardContext: false, cardMinimums: false };
+
+  // Trigger timestamps
+  const triggers = [
+    { id: 'cardPoll',      pill: 'pillPoll',      at: 432,  label: 'Community poll',            demoBtn: 'demoBtn1' },
+    { id: 'cardExamq',    pill: 'pillExamq',     at: 720,  label: 'Your missed exam questions', demoBtn: 'demoBtn2' },
+    { id: 'cardNtsb',     pill: 'pillNtsb',      at: 1060, label: 'NTSB accident report',       demoBtn: 'demoBtn3' },
+    { id: 'cardContext',  pill: 'pillContext',   at: 1320, label: 'Flight context',              demoBtn: 'demoBtn5' },
+    { id: 'cardMinimums', pill: 'pillMinimums',  at: 1575, label: 'Personal minimums',          demoBtn: 'demoBtn4' },
+  ];
+
+  const nowPlayingPhrases = {
+    0:    'Introduction — setting the scene',
+    120:  'Approaching Tampa — weather briefing',
+    300:  'Reviewing your four options',
+    432:  'Panel debates: go under or get clearance?',
+    600:  'Deep dive on coastal route risk',
+    720:  'Class B entry requirements',
+    900:  'Overwater risk and divert options',
+    1060: 'Discussing accident history',
+    1300: 'Weather minimums and personal limits',
+    1575: 'Panel reaching consensus',
+    1800: 'Final takeaways and closing thoughts',
+  };
+
+  function getNowPlaying(secs) {
+    const keys = Object.keys(nowPlayingPhrases).map(Number).sort((a,b)=>a-b);
+    let label = nowPlayingPhrases[0];
+    for (const k of keys) { if (secs >= k) label = nowPlayingPhrases[k]; }
+    return label;
+  }
+
+  function fmt(s) {
+    return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  function collapseAllCards() {
+    for (const tr of triggers) {
+      const card = document.getElementById(tr.id);
+      if (card.classList.contains('visible')) {
+        card.classList.remove('visible', 'dismissing');
+        document.getElementById(tr.pill).classList.add('visible');
+      }
+    }
+  }
+
+  let jumpGen = 0; // incremented on each jump to cancel stale timeouts
+
+  function checkTriggers() {
+    // find all triggers that should fire now but haven't yet
+    const fired = triggers.filter(tr => currentSeconds >= tr.at && !shown[tr.id]);
+    if (fired.length === 0) return;
+
+    // mark all as shown and highlight their buttons
+    fired.forEach(tr => {
+      shown[tr.id] = true;
+      document.getElementById(tr.demoBtn).classList.add('active');
+    });
+
+    // only display the latest one (highest timestamp) — prevents stacking on jump
+    const latest = fired[fired.length - 1];
+    collapseAllCards();
+    document.getElementById('emptyState').style.display = 'none';
+    const gen = jumpGen;
+    setTimeout(() => {
+      if (jumpGen === gen) document.getElementById(latest.id).classList.add('visible');
+    }, 50);
+    showToast('New card: ' + latest.label);
+  }
+
+  function updateProgress() {
+    document.getElementById('progressFill').style.width = (currentSeconds/totalSeconds*100)+'%';
+    document.getElementById('currentTime').textContent = fmt(currentSeconds);
+    document.getElementById('nowPlayingText').textContent = getNowPlaying(currentSeconds);
+    checkTriggers();
+  }
+
+  function togglePlay() {
+    playing = !playing;
+    document.getElementById('playBtn').textContent = playing ? '⏸' : '▶';
+    if (playing) {
+      timer = setInterval(() => {
+        if (currentSeconds < totalSeconds) { currentSeconds++; updateProgress(); }
+        else { clearInterval(timer); playing = false; document.getElementById('playBtn').textContent = '▶'; }
+      }, 200); // 5x speed so demo is usable
+    } else { clearInterval(timer); }
+  }
+
+  function skip(s) {
+    currentSeconds = Math.max(0, Math.min(totalSeconds, currentSeconds + s));
+    updateProgress();
+  }
+
+  function scrubTo(e) {
+    const r = e.currentTarget.getBoundingClientRect();
+    currentSeconds = Math.round(((e.clientX - r.left) / r.width) * totalSeconds);
+    updateProgress();
+  }
+
+  function jumpTo(secs) {
+    jumpGen++; // cancel any pending card-show timeouts from previous jump
+    // reset all card state so triggers fire fresh
+    for (const tr of triggers) {
+      shown[tr.id] = false;
+      document.getElementById(tr.id).classList.remove('visible', 'dismissing');
+      document.getElementById(tr.pill).classList.remove('visible');
+      document.getElementById(tr.demoBtn).classList.remove('active');
+    }
+    document.getElementById('emptyState').style.display = '';
+    currentSeconds = secs;
+    updateProgress();
+    if (!playing) togglePlay();
+  }
+
+  function updateSliderVal(v) {
+    document.getElementById('sliderValDisplay').textContent = v + ' / 10';
+    const pct = ((v - 1) / 9 * 100).toFixed(0);
+    document.getElementById('comfortSlider').style.background =
+      'linear-gradient(to right, #f0a500 ' + pct + '%, #e2e8f0 ' + pct + '%)';
+  }
+
+  function submitComfort() {
+    const v = parseInt(document.getElementById('comfortSlider').value);
+    document.getElementById('sliderWrap').style.display = 'none';
+    document.getElementById('yourRatingDisplay').textContent = v + ' / 10';
+    const r = document.getElementById('comfortResults');
+    r.style.display = 'flex'; r.style.flexDirection = 'column';
+    const dist = [4, 8, 14, 18, 16, 12, 9, 8, 7, 4];
+    const max = Math.max(...dist);
+    const distEl = document.getElementById('comfortDist');
+    distEl.innerHTML = '';
+    dist.forEach(function(count, i) {
+      const bar = document.createElement('div');
+      bar.className = 'comfort-bar' + (i + 1 === v ? ' yours' : '');
+      bar.style.height = '0px';
+      bar.title = 'Rating ' + (i+1) + ': ' + count + '%';
+      distEl.appendChild(bar);
+      setTimeout(function() { bar.style.height = (count / max * 38) + 'px'; }, 100);
+    });
+  }
+
+  function dismissCard(cardId, pillId) {
+    const card = document.getElementById(cardId);
+    card.classList.add('dismissing');
+    setTimeout(() => {
+      card.classList.remove('visible', 'dismissing');
+      document.getElementById(pillId).classList.add('visible');
+    }, 280);
+  }
+
+  function reopenCard(cardId, pillId) {
+    document.getElementById(pillId).classList.remove('visible');
+    const card = document.getElementById(cardId);
+    card.classList.add('visible');
+  }
+
+  const examQuestions = [
+    {
+      q: 'A pilot wishing to operate in Class B airspace must:',
+      opts: ['Receive an ATC clearance before entering', 'Squawk 1200 and remain clear', 'File an IFR flight plan'],
+      acs: 'PA.I.G.K2',
+      missed: 'Missed twice'
+    },
+    {
+      q: 'What is the minimum flight visibility required within Class B airspace?',
+      opts: ['1 statute mile', '3 statute miles', '5 statute miles'],
+      acs: 'PA.I.G.K1',
+      missed: 'Missed once'
+    },
+    {
+      q: 'Which pilot certificate is required to land at a Class B primary airport?',
+      opts: ['Student certificate with endorsement', 'Private pilot certificate', 'Sport pilot certificate'],
+      acs: 'PA.I.G.K3',
+      missed: 'Missed twice'
+    },
+  ];
+  let currentExamQ = 0;
+
+  function showExamQ(idx) {
+    currentExamQ = Math.max(0, Math.min(examQuestions.length - 1, idx));
+    const q = examQuestions[currentExamQ];
+    const card = document.getElementById('examQ1');
+    card.querySelector('.exam-q-text').textContent = q.q;
+    const opts = card.querySelectorAll('.exam-option');
+    opts.forEach((o, i) => {
+      o.querySelector('input').checked = false;
+      o.querySelector('input').value = String.fromCharCode(97 + i);
+      o.querySelector('input').name = 'eq' + currentExamQ;
+      o.lastChild.textContent = ' ' + q.opts[i];
+    });
+    card.querySelector('.exam-acs').textContent = q.acs + ' — Airspace';
+    card.querySelector('.exam-missed-badge').textContent = q.missed;
+    document.getElementById('examCounter').textContent = 'Question ' + (currentExamQ + 1) + ' of ' + examQuestions.length;
+  }
+
+  function saveMinimums() {
+    if (document.getElementById('minimumsText').value.trim()) {
+      const b = document.getElementById('savedBadge');
+      b.style.display = 'inline-block';
+      setTimeout(() => b.style.display = 'none', 2500);
+    }
+  }
+
+  function showSummary() { document.getElementById('summaryOverlay').classList.add('open'); }
+  function closeSummary() { document.getElementById('summaryOverlay').classList.remove('open'); }
+
+  updateProgress();
+</script>
 </body>
 </html>
