@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Study Coach — Flow Mockup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+         background: #f0f2f5; min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* ── Top Nav ─────────────────────────────────────────────── */
+  .topnav { background: white; border-bottom: 1px solid #dde2ea;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; height: 52px; flex-shrink: 0; z-index: 10; position: relative; }
+  .topnav-logo { display: flex; align-items: center; gap: 8px; font-weight: 700;
+    font-size: 17px; color: #1a3860; }
+  .topnav-logo svg { width: 28px; height: 28px; }
+  .topnav-links { display: flex; gap: 28px; font-size: 13px; color: #444; }
+  .topnav-right { display: flex; align-items: center; gap: 14px; }
+  .avatar { width: 30px; height: 30px; background: #1a3860; border-radius: 50%;
+    color: white; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; }
+
+  /* ── Layout ──────────────────────────────────────────────── */
+  .layout { display: flex; flex: 1; overflow: hidden; }
+
+  /* ── Sidebar ─────────────────────────────────────────────── */
+  .sidebar { width: 220px; background: #1a3860; color: white; flex-shrink: 0;
+    display: flex; flex-direction: column; font-size: 13px; }
+  .sidebar-track { display: flex; align-items: center; gap: 10px;
+    padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,.12); }
+  .track-thumb { width: 36px; height: 36px; background: #2a4f82; border-radius: 4px;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .track-title { font-weight: 700; font-size: 13px; }
+  .track-sub { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 2px; }
+  .sidebar-section { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .sidebar-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,.38);
+    text-transform: uppercase; letter-spacing: .8px; padding: 4px 16px 4px; }
+  .sidebar-item { display: flex; align-items: center; gap: 9px;
+    padding: 6px 16px; color: rgba(255,255,255,.7); font-size: 12px; cursor: pointer; }
+  .sidebar-item.active { background: rgba(255,255,255,.12); color: white; font-weight: 600; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,.28); flex-shrink: 0; }
+  .sidebar-item.active .dot { background: #f0a500; }
+  .sidebar-footer { margin-top: auto; padding: 12px 16px; }
+  .prog-label { font-size: 11px; color: rgba(255,255,255,.42); margin-bottom: 6px; }
+  .prog-row { background: rgba(255,255,255,.07); border-radius: 6px;
+    padding: 7px 10px; margin-bottom: 5px; font-size: 11.5px; color: rgba(255,255,255,.68);
+    display: flex; justify-content: space-between; align-items: center; }
+  .prog-circle { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.28); }
+
+  /* ── Pages ───────────────────────────────────────────────── */
+  .pages { flex: 1; position: relative; overflow: hidden; }
+  .page { position: absolute; inset: 0; overflow-y: auto;
+    padding: 26px 36px; transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .35s;
+    will-change: transform; }
+  .page.hidden-left  { transform: translateX(-60px); opacity: 0; pointer-events: none; }
+  .page.hidden-right { transform: translateX(60px);  opacity: 0; pointer-events: none; }
+  .page.active       { transform: translateX(0);     opacity: 1; }
+
+  /* ── Step indicator ──────────────────────────────────────── */
+  .step-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 20px; }
+  .step { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #aab5c4; }
+  .step.done { color: #1a3860; font-weight: 600; cursor: pointer; }
+  .step.done:hover { text-decoration: underline; }
+  .step.current { color: #1a3860; font-weight: 700; }
+  .step-num { width: 20px; height: 20px; border-radius: 50%; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    background: #dde6f2; color: #1a3860; flex-shrink: 0; }
+  .step.done .step-num { background: #1a3860; color: white; }
+  .step.current .step-num { background: #f0a500; color: #1a3860; }
+  .step-arrow { color: #c5cdd8; font-size: 11px; }
+
+  /* ── Page titles ─────────────────────────────────────────── */
+  .page-title { font-size: 20px; font-weight: 700; color: #1a3860; margin-bottom: 20px; }
+
+  /* ── NEW pill ────────────────────────────────────────────── */
+  .new-pill { display: inline-flex; align-items: center; gap: 5px;
+    background: #1a3860; color: #f0a500; font-size: 10px; font-weight: 700;
+    letter-spacing: .5px; padding: 3px 9px; border-radius: 20px; margin-bottom: 10px;
+    vertical-align: middle; }
+
+  /* ── Coach card ──────────────────────────────────────────── */
+  .coach-card { background: white; border-radius: 12px;
+    box-shadow: 0 2px 14px rgba(26,56,96,.13), 0 0 0 1.5px rgba(26,56,96,.08);
+    margin-bottom: 28px; overflow: hidden; }
+  .coach-header { background: #1a3860; padding: 13px 20px;
+    display: flex; align-items: center; justify-content: space-between; }
+  .coach-header-left { display: flex; align-items: center; gap: 10px; }
+  .coach-icon { width: 32px; height: 32px; background: rgba(255,255,255,.15);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .coach-title { color: white; font-weight: 700; font-size: 13.5px; }
+  .coach-subtitle { color: rgba(255,255,255,.52); font-size: 11px; margin-top: 2px; }
+  .coach-badge { background: #f0a500; color: #1a3860; font-size: 11px; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px; }
+  .coach-body { padding: 18px 20px; }
+  .coach-intro { font-size: 13px; color: #555; margin-bottom: 16px; line-height: 1.55; }
+
+  .topics { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+  .topic { border: 1.5px solid #dde6f2; border-radius: 10px; padding: 13px 15px;
+    display: flex; align-items: center; gap: 13px; }
+  .topic.top { border-color: #1a3860; background: #f5f8fd; }
+  .rank { width: 26px; height: 26px; border-radius: 50%; background: #e4edf8;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11.5px; font-weight: 700; color: #1a3860; flex-shrink: 0; }
+  .topic.top .rank { background: #1a3860; color: white; }
+  .topic-info { flex: 1; }
+  .topic-name { font-weight: 700; font-size: 13px; color: #1a3860; }
+  .topic-reason { font-size: 11.5px; color: #666; margin-top: 3px; line-height: 1.4; }
+  .chip { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; flex-shrink: 0; }
+  .chip.red   { background: #fde8e8; color: #8b1a1a; }
+  .chip.amber { background: #fef3d0; color: #7a4f00; }
+
+  .coach-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .btn-primary { background: #f0a500; color: #1a3860; border: none;
+    font-weight: 700; font-size: 13.5px; padding: 10px 20px; border-radius: 8px; cursor: pointer;
+    transition: background .15s, transform .1s; }
+  .btn-primary:hover { background: #d99200; transform: translateY(-1px); }
+  .btn-secondary { background: #e8eef6; color: #1a3860; border: none;
+    font-size: 12px; font-weight: 600; padding: 9px 14px; border-radius: 8px; cursor: pointer;
+    transition: background .15s; }
+  .btn-secondary:hover { background: #d8e4f0; }
+  .time-hint { font-size: 12px; color: #888; margin-left: auto; }
+
+  /* ── Divider ─────────────────────────────────────────────── */
+  .divider { font-size: 11px; font-weight: 700; color: #aab5c4; text-transform: uppercase;
+    letter-spacing: .7px; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px; }
+  .divider::after { content: ''; flex: 1; height: 1px; background: #e4eaf2; }
+
+  /* ── Page 1 session list ─────────────────────────────────── */
+  .session-list { display: flex; flex-direction: column; gap: 7px; }
+  .session { background: white; border: 1.5px solid #e4eaf2; border-radius: 8px;
+    padding: 12px 15px; display: flex; align-items: flex-start; gap: 11px; cursor: pointer;
+    transition: border-color .15s, box-shadow .15s; }
+  .session:hover { border-color: #b0c4dc; box-shadow: 0 2px 8px rgba(26,56,96,.07); }
+  .radio { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #b8c5d6;
+    flex-shrink: 0; margin-top: 2px; transition: border-color .15s; }
+  .session-title { font-weight: 600; font-size: 13px; color: #1a3860; }
+  .session-desc { font-size: 11.5px; color: #777; margin-top: 2px; line-height: 1.4; }
+
+  /* ── Page 2 ──────────────────────────────────────────────── */
+  .filter-banner { background: #f5f8fd; border: 1.5px solid #1a3860; border-radius: 10px;
+    padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .filter-icon { font-size: 18px; }
+  .filter-text { flex: 1; font-size: 12.5px; color: #1a3860; line-height: 1.45; }
+  .filter-text strong { font-weight: 700; }
+  .filter-clear { font-size: 11.5px; color: #4a7fc1; cursor: pointer; text-decoration: underline;
+    white-space: nowrap; }
+
+  .session-types { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 22px; }
+  .stype { background: white; border: 1.5px solid #dde6f2; border-radius: 10px;
+    padding: 16px; cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+  .stype:hover { border-color: #4a7fc1; box-shadow: 0 2px 10px rgba(26,56,96,.08); }
+  .stype.recommended { border-color: #1a3860; background: #f5f8fd; position: relative; }
+  .stype-tag { position: absolute; top: -1px; right: 12px;
+    background: #1a3860; color: #f0a500; font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 0 0 6px 6px; }
+  .stype-icon { font-size: 20px; margin-bottom: 8px; }
+  .stype-name { font-weight: 700; font-size: 13px; color: #1a3860; margin-bottom: 4px; }
+  .stype-desc { font-size: 11.5px; color: #666; line-height: 1.4; }
+
+  .stype-when { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 20px; display: inline-block; margin-bottom: 8px; }
+  .stype-when.remedial      { background: #fde8e8; color: #8b1a1a; }
+  .stype-when.review        { background: #fef3d0; color: #7a4f00; }
+  .stype-when.adaptive      { background: #e8f0fe; color: #1a4494; }
+  .stype-when.custom        { background: #f0f0f0; color: #555; }
+  .stype-when.general       { background: #f0f0f0; color: #555; }
+  .stype-when.self-directed { background: #edf7f0; color: #1a5c34; }
+
+  .stype-continue { display: flex; align-items: center; gap: 12px; }
+
+  /* ── Page 3 ──────────────────────────────────────────────── */
+  .mode-cards { display: flex; gap: 14px; margin-bottom: 24px; }
+  .mode-card { flex: 1; background: white; border: 2px solid #dde6f2; border-radius: 12px;
+    padding: 24px 20px; cursor: pointer; transition: border-color .15s, box-shadow .15s; text-align: center; }
+  .mode-card:hover { border-color: #4a7fc1; box-shadow: 0 3px 14px rgba(26,56,96,.1); }
+  .mode-card.selected { border-color: #f0a500; box-shadow: 0 3px 14px rgba(240,165,0,.18); }
+  .mode-icon { font-size: 36px; margin-bottom: 12px; }
+  .mode-name { font-weight: 700; font-size: 16px; color: #1a3860; margin-bottom: 6px; }
+  .mode-desc { font-size: 12.5px; color: #666; line-height: 1.5; }
+  .mode-tag { display: inline-block; margin-top: 10px; font-size: 11px; font-weight: 600;
+    padding: 3px 10px; border-radius: 20px; background: #fef3d0; color: #7a4f00; }
+
+  .launch-section { text-align: center; padding-top: 8px; }
+  .btn-launch { background: #f0a500; color: #1a3860; border: none;
+    font-weight: 700; font-size: 16px; padding: 13px 36px; border-radius: 10px; cursor: pointer;
+    transition: background .15s, transform .1s; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-launch:hover { background: #d99200; transform: translateY(-1px); }
+  .launch-meta { font-size: 12px; color: #888; margin-top: 8px; }
+
+  .summary-box { background: #f5f8fd; border: 1.5px solid #dde6f2; border-radius: 10px;
+    padding: 14px 16px; margin-bottom: 22px; }
+  .summary-row { display: flex; justify-content: space-between; font-size: 12.5px;
+    color: #555; padding: 3px 0; }
+  .summary-row strong { color: #1a3860; font-weight: 600; }
+
+  /* ── Back link ───────────────────────────────────────────── */
+  .back-link { font-size: 12px; color: #4a7fc1; cursor: pointer; margin-bottom: 16px;
+    display: inline-flex; align-items: center; gap: 4px; }
+  .back-link:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- Top Nav -->
+<nav class="topnav">
+  <div class="topnav-logo">
+    <svg viewBox="0 0 28 28" fill="none">
+      <rect width="28" height="28" rx="4" fill="#1a3860"/>
+      <path d="M6 18 L14 8 L22 18" stroke="#f0a500" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="M10 18.5 L18 18.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    Sporty's
+  </div>
+  <div class="topnav-links">
+    <span>My Courses</span><span>All Courses</span><span>Learn To Fly</span>
+  </div>
+  <div class="topnav-right">
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#888" stroke-width="2">
+      <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-5-5.917V4a1 1 0 10-2 0v1.083A6 6 0 006 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+    </svg>
+    <div class="avatar">EP</div>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-track">
+      <div class="track-thumb">✈</div>
+      <div><div class="track-title">Private Pilot</div><div class="track-sub">Change Track</div></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-item"><div class="dot"></div>Home</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Video Training</div>
+      <div class="sidebar-item"><div class="dot"></div>Start Next Lesson</div>
+      <div class="sidebar-item"><div class="dot"></div>Optional Video Training</div>
+      <div class="sidebar-item"><div class="dot"></div>Flight Maneuvers Guide</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Test Prep</div>
+      <div class="sidebar-item active" id="sb-session"><div class="dot"></div>Start new study session</div>
+      <div class="sidebar-item"><div class="dot"></div>Take a practice test</div>
+      <div class="sidebar-item"><div class="dot"></div>Study History</div>
+      <div class="sidebar-item"><div class="dot"></div>FAA Test Results Analysis</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-item"><div class="dot"></div>FAA Handbooks</div>
+      <div class="sidebar-item"><div class="dot"></div>Training Resources</div>
+      <div class="sidebar-item"><div class="dot"></div>Checkride Prep</div>
+      <div class="sidebar-item"><div class="dot"></div>Aviation Intelligence (AI)</div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="prog-label">Progress</div>
+      <div class="prog-row">Video Progress: 40%<div class="prog-circle"></div></div>
+      <div class="prog-row">Pass FAA Practice Test<div class="prog-circle"></div></div>
+    </div>
+  </aside>
+
+  <!-- Pages -->
+  <div class="pages">
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- PAGE 1 · Test Prep Dashboard                   -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="page active" id="page1">
+
+      <div class="step-bar">
+        <div class="step current"><div class="step-num">1</div>Start a session</div>
+        <div class="step-arrow">›</div>
+        <div class="step"><div class="step-num">2</div>Session type</div>
+        <div class="step-arrow">›</div>
+        <div class="step"><div class="step-num">3</div>Study mode</div>
+      </div>
+
+      <div class="page-title">Start a new study session
+        <span class="new-pill" style="font-size:9px;margin-left:8px;">✦ NEW — AI Study Coach</span>
+      </div>
+
+      <!-- Study Coach Card -->
+      <div class="coach-card">
+        <div class="coach-header">
+          <div class="coach-header-left">
+            <div class="coach-icon">🎯</div>
+            <div>
+              <div class="coach-title">Your Study Plan This Week</div>
+              <div class="coach-subtitle">Based on your last 3 sessions · Updated today</div>
+            </div>
+          </div>
+          <div class="coach-badge">2 focus areas</div>
+        </div>
+        <div class="coach-body">
+          <div class="coach-intro">Your accuracy in regulations has improved — these are the two areas still costing you points. Weather questions appear on 5–7 exam questions, and your recent miss rate is high.</div>
+          <div class="topics">
+            <div class="topic top">
+              <div class="rank">1</div>
+              <div class="topic-info">
+                <div class="topic-name">Weather &amp; Meteorology</div>
+                <div class="topic-reason">Missed 7 of your last 10 questions. 12 questions you've never answered correctly — best addressed before your exam.</div>
+              </div>
+              <div class="chip red">High priority</div>
+            </div>
+            <div class="topic">
+              <div class="rank">2</div>
+              <div class="topic-info">
+                <div class="topic-name">Airspace</div>
+                <div class="topic-reason">Missed 5 of your last 8 questions, mostly Class B and C boundaries. Last studied 11 days ago.</div>
+              </div>
+              <div class="chip amber">Review due</div>
+            </div>
+          </div>
+          <div class="coach-actions">
+            <button class="btn-primary" onclick="goToPage2()">Start Session →</button>
+            <button class="btn-secondary" onclick="goToPage2('flashcard')">Use Flashcard mode</button>
+            <span class="time-hint">⏱ ~20 min · 15 questions</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manual session list -->
+      <div class="divider">Or choose your own session type</div>
+
+      <div class="session-list">
+        <div class="session" onclick="goToPage2('custom')">
+          <div class="radio"></div><div>
+            <div class="session-title">Specific Categories</div>
+            <div class="session-desc">Create a custom session by selecting specific categories to study.</div>
+          </div>
+        </div>
+        <div class="session" onclick="goToPage2('random')">
+          <div class="radio"></div><div>
+            <div class="session-title">Random Questions</div>
+            <div class="session-desc">A new session from a random selection of questions.</div>
+          </div>
+        </div>
+        <div class="session" onclick="goToPage2('smart')">
+          <div class="radio"></div><div>
+            <div class="session-title">Smart Study</div>
+            <div class="session-desc">Questions from your weakest performing categories.</div>
+          </div>
+        </div>
+        <div class="session" onclick="goToPage2('never-correct')">
+          <div class="radio"></div><div>
+            <div class="session-title">Questions I've Never Answered Correctly</div>
+            <div class="session-desc">Targets persistent blind spots — questions that haven't clicked despite repeated exposure.</div>
+          </div>
+        </div>
+        <div class="session" onclick="goToPage2('missed-once')">
+          <div class="radio"></div><div>
+            <div class="session-title">Questions I've Missed At Least Once</div>
+            <div class="session-desc">Broadest review net — best for a comprehensive sweep before your exam.</div>
+          </div>
+        </div>
+        <div class="session" onclick="goToPage2('marked')">
+          <div class="radio"></div><div>
+            <div class="session-title">Marked Questions</div>
+            <div class="session-desc">Questions you've bookmarked for intentional review.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- PAGE 2 · Session Type                          -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="page hidden-right" id="page2">
+
+      <div class="step-bar">
+        <div class="step done" onclick="goToPage1()"><div class="step-num">✓</div>Start a session</div>
+        <div class="step-arrow">›</div>
+        <div class="step current"><div class="step-num">2</div>Session type</div>
+        <div class="step-arrow">›</div>
+        <div class="step"><div class="step-num">3</div>Study mode</div>
+      </div>
+
+      <div class="back-link" onclick="goToPage1()">← Back</div>
+      <div class="page-title">What type of session would you like?</div>
+
+      <!-- Coach filter banner — shown when coming from coach card -->
+      <div class="filter-banner" id="filter-banner">
+        <div class="filter-icon">🎯</div>
+        <div class="filter-text">
+          <strong>Study Coach recommendation:</strong> Weather &amp; Meteorology · Airspace<br>
+          Pre-filtered to your focus areas. Session type selected below based on your history.
+        </div>
+        <span class="filter-clear" onclick="clearFilter()">Clear filter</span>
+      </div>
+
+      <div class="session-types" id="session-types">
+        <!-- Recommended: Questions I've Never Answered Correctly -->
+        <div class="stype recommended" id="stype-never" onclick="selectSessionType('never-correct')">
+          <div class="stype-tag">✦ Recommended</div>
+          <div class="stype-when remedial">Remedial — highest priority</div>
+          <div class="stype-icon">🎯</div>
+          <div class="stype-name">Questions I've Never Answered Correctly</div>
+          <div class="stype-desc">12 questions flagged in Weather &amp; Airspace. Targets persistent blind spots — material that hasn't clicked despite repeated exposure.</div>
+        </div>
+        <div class="stype" onclick="selectSessionType('missed-once')">
+          <div class="stype-when review">Pre-exam sweep</div>
+          <div class="stype-icon">🔄</div>
+          <div class="stype-name">Questions I've Missed At Least Once</div>
+          <div class="stype-desc">Broader net — best as a comprehensive sweep in the final stretch before your exam date.</div>
+        </div>
+        <div class="stype" onclick="selectSessionType('smart')">
+          <div class="stype-when adaptive">Adaptive — all categories</div>
+          <div class="stype-icon">📊</div>
+          <div class="stype-name">Smart Study</div>
+          <div class="stype-desc">Auto-selects from your weakest categories across the full question bank.</div>
+        </div>
+        <div class="stype" onclick="selectSessionType('specific')">
+          <div class="stype-when custom">Custom — you choose</div>
+          <div class="stype-icon">📂</div>
+          <div class="stype-name">Specific Categories</div>
+          <div class="stype-desc">Pick any category manually. Removes the Study Coach focus area filter.</div>
+        </div>
+        <div class="stype" onclick="selectSessionType('random')">
+          <div class="stype-when general">General practice</div>
+          <div class="stype-icon">🎲</div>
+          <div class="stype-name">Random Questions</div>
+          <div class="stype-desc">Pull from the full question bank at random. No filtering applied.</div>
+        </div>
+        <div class="stype" onclick="selectSessionType('marked')">
+          <div class="stype-when self-directed">Self-directed review</div>
+          <div class="stype-icon">🔖</div>
+          <div class="stype-name">Marked Questions</div>
+          <div class="stype-desc">Questions you've bookmarked yourself for intentional review.</div>
+        </div>
+      </div>
+
+      <div class="stype-continue">
+        <button class="btn-primary" onclick="goToPage3()">Continue →</button>
+        <span class="time-hint" id="p2-time-hint">⏱ ~20 min · 15 questions</span>
+      </div>
+    </div>
+
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- PAGE 3 · Study Mode                            -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="page hidden-right" id="page3">
+
+      <div class="step-bar">
+        <div class="step done" onclick="goToPage1()"><div class="step-num">✓</div>Start a session</div>
+        <div class="step-arrow">›</div>
+        <div class="step done" onclick="goToPage2()"><div class="step-num">✓</div>Session type</div>
+        <div class="step-arrow">›</div>
+        <div class="step current"><div class="step-num">3</div>Study mode</div>
+      </div>
+
+      <div class="back-link" onclick="goToPage2()">← Back</div>
+      <div class="page-title">How would you like to study?</div>
+
+      <!-- Session summary -->
+      <div class="summary-box">
+        <div class="summary-row"><span>Focus areas</span><strong>Weather &amp; Meteorology, Airspace</strong></div>
+        <div class="summary-row"><span>Session type</span><strong id="summary-type">Questions I've Never Answered Correctly</strong></div>
+        <div class="summary-row"><span>Questions</span><strong>15 questions</strong></div>
+        <div class="summary-row"><span>Est. time</span><strong>~20 minutes</strong></div>
+      </div>
+
+      <!-- Mode selection -->
+      <div class="mode-cards">
+        <div class="mode-card selected" id="mode-question" onclick="selectMode('question')">
+          <div class="mode-icon">📝</div>
+          <div class="mode-name">Question Mode</div>
+          <div class="mode-desc">Full multiple-choice questions with answer explanations. Best for final review before your exam.</div>
+        </div>
+        <div class="mode-card" id="mode-flashcard" onclick="selectMode('flashcard')">
+          <div class="mode-icon">⚡</div>
+          <div class="mode-name">Flashcard Mode</div>
+          <div class="mode-desc">Flashcards for each question in your session. Good for building recognition before switching to full question mode.</div>
+          <div class="mode-tag">Coach suggests this for Weather</div>
+        </div>
+      </div>
+
+      <div class="launch-section">
+        <button class="btn-launch" onclick="launchSession()">
+          <span>Launch Session</span><span>→</span>
+        </button>
+        <div class="launch-meta">15 questions · Weather &amp; Meteorology, Airspace · Pre-filtered</div>
+      </div>
+    </div>
+
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- PAGE 4 · Confirmation / Launched               -->
+    <!-- ─────────────────────────────────────────────── -->
+    <div class="page hidden-right" id="page4">
+      <div style="max-width:480px; margin: 60px auto; text-align:center;">
+        <div style="font-size:52px; margin-bottom:16px;">✅</div>
+        <div style="font-size:20px; font-weight:700; color:#1a3860; margin-bottom:8px;">Session Launched</div>
+        <div style="font-size:13.5px; color:#555; line-height:1.6; margin-bottom:28px;">
+          Your session is ready: 15 questions in Weather &amp; Meteorology and Airspace,
+          pre-filtered to questions you've never answered correctly.
+        </div>
+        <div style="background:#f5f8fd; border:1.5px solid #dde6f2; border-radius:10px; padding:16px 20px; text-align:left; margin-bottom:24px;">
+          <div style="font-size:11px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:.6px; margin-bottom:10px;">Your Study Coach will check back</div>
+          <div style="font-size:13px; color:#444; line-height:1.55;">After this session, your accuracy by category will update. A fresh recommendation appears the next time you open the dashboard — no new suggestion is pushed immediately.</div>
+        </div>
+        <button class="btn-primary" onclick="goToPage1()" style="font-size:13px; padding:9px 20px;">← Return to Dashboard</button>
+      </div>
+    </div>
+
+  </div><!-- /pages -->
+</div><!-- /layout -->
+
+<script>
+  let fromCoach = false;
+  let selectedMode = 'question';
+  let selectedType = 'never-correct';
+
+  function goToPage1() {
+    setPage('page1', null);
+    fromCoach = false;
+  }
+
+  function goToPage2(type) {
+    // Called with no arg = "Start Session" from coach card
+    // Called with a string = user picked a session type manually
+    if (type === undefined || type === 'flashcard') {
+      fromCoach = true;
+      selectedMode = (type === 'flashcard') ? 'flashcard' : 'question';
+      selectedType = 'never-correct';
+    } else {
+      fromCoach = false;
+      selectedMode = 'question';
+      selectedType = type;
+    }
+    document.getElementById('filter-banner').style.display = fromCoach ? 'flex' : 'none';
+    // highlight recommended type
+    document.querySelectorAll('.stype').forEach(el => el.classList.remove('selected-stype'));
+    if (fromCoach) {
+      document.getElementById('stype-never').style.borderColor = '#1a3860';
+    }
+    setPage('page2', 'page1');
+  }
+
+  function clearFilter() {
+    fromCoach = false;
+    document.getElementById('filter-banner').style.display = 'none';
+    document.getElementById('stype-never').classList.remove('recommended');
+    document.getElementById('stype-never').querySelector('.stype-tag') &&
+      (document.getElementById('stype-never').querySelector('.stype-tag').remove());
+  }
+
+  function selectSessionType(type) {
+    selectedType = type;
+    document.querySelectorAll('.stype').forEach(el => {
+      el.style.borderColor = '';
+      el.style.boxShadow = '';
+    });
+    event.currentTarget.style.borderColor = '#f0a500';
+    event.currentTarget.style.boxShadow = '0 2px 10px rgba(240,165,0,.2)';
+  }
+
+  function goToPage3() {
+    const typeNames = {
+      'never-correct': "Questions I've Never Answered Correctly",
+      'missed-once':   "Questions I've Missed At Least Once",
+      'smart':         'Smart Study',
+      'specific':      'Specific Categories',
+      'random':        'Random Questions',
+      'marked':        'Marked Questions'
+    };
+    document.getElementById('summary-type').textContent = typeNames[selectedType] || selectedType;
+    if (selectedMode === 'flashcard') {
+      document.getElementById('mode-flashcard').classList.add('selected');
+      document.getElementById('mode-question').classList.remove('selected');
+    } else {
+      document.getElementById('mode-question').classList.add('selected');
+      document.getElementById('mode-flashcard').classList.remove('selected');
+    }
+    setPage('page3', 'page2');
+  }
+
+  function selectMode(mode) {
+    selectedMode = mode;
+    document.getElementById('mode-question').classList.toggle('selected', mode === 'question');
+    document.getElementById('mode-flashcard').classList.toggle('selected', mode === 'flashcard');
+  }
+
+  function launchSession() {
+    setPage('page4', 'page3');
+  }
+
+  function setPage(toId, fromId) {
+    const pages = document.querySelectorAll('.page');
+    const toEl = document.getElementById(toId);
+    const fromEl = fromId ? document.getElementById(fromId) : null;
+
+    // Determine direction
+    const order = ['page1','page2','page3','page4'];
+    const forward = fromId ? order.indexOf(toId) > order.indexOf(fromId) : true;
+
+    pages.forEach(p => {
+      if (p.id === toId) {
+        p.className = 'page active';
+      } else if (p.id === fromId) {
+        p.className = 'page ' + (forward ? 'hidden-left' : 'hidden-right');
+      } else {
+        const idx = order.indexOf(p.id);
+        const toIdx = order.indexOf(toId);
+        p.className = 'page ' + (idx < toIdx ? 'hidden-left' : 'hidden-right');
+      }
+    });
+    toEl.scrollTop = 0;
+  }
+</script>
+</body>
+</html>

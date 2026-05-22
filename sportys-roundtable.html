@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Roundtable Sidebar — Mockup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+         background: #f0f2f5; min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* Top nav */
+  .topnav { background: white; border-bottom: 1px solid #dde2ea;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; height: 52px; flex-shrink: 0; }
+  .topnav-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 17px; color: #1a3860; }
+  .topnav-logo svg { width: 28px; height: 28px; }
+  .topnav-links { display: flex; gap: 28px; font-size: 13px; color: #444; }
+  .topnav-right { display: flex; align-items: center; gap: 14px; }
+  .avatar { width: 30px; height: 30px; background: #1a3860; border-radius: 50%;
+    color: white; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; }
+  .fav-btn { font-size: 12px; color: #666; border: 1px solid #ddd; padding: 4px 10px;
+    border-radius: 6px; background: white; }
+
+  /* Layout */
+  .layout { display: flex; flex: 1; }
+
+  /* Left nav */
+  .sidebar { width: 200px; background: #1a3860; color: white; flex-shrink: 0;
+    display: flex; flex-direction: column; font-size: 13px; padding: 16px 0; }
+  .sidebar-logo { padding: 0 16px 16px; border-bottom: 1px solid rgba(255,255,255,.1); margin-bottom: 12px; }
+  .sidebar-logo img { width: 140px; }
+  .sidebar-logo-text { font-weight: 800; font-size: 15px; color: white; letter-spacing: -.3px; }
+  .sidebar-logo-sub { font-size: 10px; color: rgba(255,255,255,.45); text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-item { display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px; color: rgba(255,255,255,.7); font-size: 12px; }
+  .sidebar-item.active { background: rgba(255,255,255,.12); color: white; }
+  .sidebar-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .sidebar-divider { height: 1px; background: rgba(255,255,255,.1); margin: 8px 0; }
+  .prog-section { padding: 12px 16px; margin-top: auto; }
+  .prog-label { font-size: 10px; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 8px; }
+  .prog-bar-bg { background: rgba(255,255,255,.12); border-radius: 3px; height: 5px; margin-bottom: 6px; }
+  .prog-bar-fill { background: #f0a500; height: 5px; border-radius: 3px; width: 33%; }
+  .prog-text { font-size: 11px; color: rgba(255,255,255,.5); }
+
+  /* Main area */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* Scenario header */
+  .scenario-header { background: white; border-bottom: 1px solid #dde2ea;
+    padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .breadcrumb-path { font-size: 11.5px; color: #888; }
+  .scenario-title { font-size: 14px; font-weight: 700; color: #1a3860; margin-top: 2px; }
+  .fav-link { font-size: 12px; color: #888; display: flex; align-items: center; gap: 5px; }
+
+  /* Progress steps */
+  .steps-bar { background: white; border-bottom: 1px solid #e8edf3; padding: 12px 24px; }
+  .steps { display: flex; align-items: center; gap: 0; }
+  .step { display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; flex: 1; }
+  .step:not(:last-child)::after { content: ''; position: absolute; top: 14px; left: 50%; width: 100%;
+    height: 1.5px; background: #d0d8e4; z-index: 0; }
+  .step.done:not(:last-child)::after { background: #1a3860; }
+  .step-circle { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #d0d8e4;
+    background: white; display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: #999; z-index: 1; position: relative; }
+  .step.done .step-circle { background: #1a3860; border-color: #1a3860; color: white; }
+  .step.active .step-circle { background: #1a3860; border-color: #1a3860; color: white;
+    box-shadow: 0 0 0 3px rgba(26,56,96,.2); }
+  .step-label { font-size: 9.5px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: .5px; }
+  .step.done .step-label, .step.active .step-label { color: #1a3860; }
+  .step-arrow { font-size: 16px; color: #f0a500; margin-bottom: 12px; }
+
+  /* Content area */
+  .content-area { flex: 1; display: flex; gap: 0; overflow: hidden; }
+
+  /* Audio player panel */
+  .audio-panel { flex: 1; padding: 28px 28px 28px 24px; overflow-y: auto; }
+  .listen-title { font-size: 18px; font-weight: 800; color: #1a3860; letter-spacing: .5px; margin-bottom: 4px; }
+  .listen-sub { font-size: 13px; color: #777; margin-bottom: 20px; }
+
+  .player { background: #0f1c2e; border-radius: 12px; padding: 16px 20px; margin-bottom: 18px; }
+  .player-bar-bg { background: rgba(255,255,255,.15); border-radius: 3px; height: 4px; margin-bottom: 12px; }
+  .player-bar-fill { background: #f0a500; height: 4px; border-radius: 3px; width: 35%; }
+  .player-controls { display: flex; align-items: center; justify-content: space-between; }
+  .player-time { font-size: 12px; color: rgba(255,255,255,.6); }
+  .player-btns { display: flex; align-items: center; gap: 16px; }
+  .player-speed { font-size: 12px; color: rgba(255,255,255,.7); background: rgba(255,255,255,.1);
+    padding: 3px 7px; border-radius: 4px; }
+  .player-icon { color: rgba(255,255,255,.7); font-size: 18px; }
+  .player-play { width: 36px; height: 36px; background: white; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .player-vol { color: rgba(255,255,255,.7); font-size: 16px; }
+
+  .player-actions { display: flex; gap: 10px; margin-bottom: 20px; }
+  .pdf-btn { background: #f0a500; color: #1a3860; border: none; font-weight: 700;
+    font-size: 12px; padding: 7px 14px; border-radius: 6px; cursor: pointer; }
+  .mp3-btn { background: transparent; color: #4a7fc1; border: 1px solid #c8d8ee;
+    font-size: 12px; padding: 7px 14px; border-radius: 6px; cursor: pointer; }
+
+  .instructors { display: flex; flex-wrap: wrap; gap: 14px; }
+  .instructor { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .instructor-avatar { width: 44px; height: 44px; border-radius: 50%; background: #1a3860;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: white; border: 2px solid transparent; }
+  .instructor-avatar.moderator { border-color: #f0a500; }
+  .instructor-name { font-size: 10px; color: #555; text-align: center; line-height: 1.3; max-width: 52px; }
+  .instructor-choice { font-size: 9.5px; color: #4a7fc1; font-weight: 600; text-align: center; }
+
+  /* Sidebar panel */
+  .sidebar-panel { width: 320px; flex-shrink: 0; background: #f5f7fb;
+    border-left: 1px solid #dde6f2; display: flex; flex-direction: column; overflow-y: auto; }
+
+  .panel-header { padding: 14px 16px; border-bottom: 1px solid #dde6f2;
+    background: white; display: flex; align-items: center; justify-content: space-between; }
+  .panel-title { font-size: 12px; font-weight: 700; color: #1a3860; text-transform: uppercase; letter-spacing: .5px; }
+  .new-pill { background: #1a3860; color: #f0a500; font-size: 9px; font-weight: 700;
+    padding: 2px 7px; border-radius: 20px; letter-spacing: .3px; }
+
+  .panel-body { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+
+  /* Active card */
+  .card { background: white; border-radius: 10px; border: 1.5px solid #dde6f2;
+    overflow: hidden; box-shadow: 0 2px 8px rgba(26,56,96,.08); }
+  .card-tag { display: flex; align-items: center; gap: 6px;
+    padding: 9px 14px; border-bottom: 1px solid #f0f3f8;
+    font-size: 10.5px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: .5px; }
+  .card-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .card-dot.poll { background: #f0a500; }
+  .card-dot.exam { background: #2563eb; }
+  .card-dot.ntsb { background: #c0392b; }
+  .card-dot.context { background: #0891b2; }
+  .card-dot.minimums { background: #27ae60; }
+  .card-body { padding: 14px; }
+  .card-question { font-size: 14px; font-weight: 600; color: #1a3860; margin-bottom: 14px; line-height: 1.4; }
+
+  /* Slider */
+  .slider-wrap { margin-bottom: 12px; }
+  .slider-labels { display: flex; justify-content: space-between; font-size: 10px; color: #888; margin-bottom: 6px; }
+  .slider { width: 100%; height: 4px; border-radius: 2px; accent-color: #f0a500;
+    background: linear-gradient(to right, #f0a500 60%, #e0e0e0 60%); }
+  .slider-val { text-align: center; font-size: 20px; font-weight: 800; color: #1a3860; margin: 10px 0; }
+
+  .submit-btn { width: 100%; background: #f0a500; color: #1a3860; border: none;
+    font-weight: 700; font-size: 13px; padding: 9px; border-radius: 7px; cursor: pointer; }
+
+  /* Collapsed pill cards */
+  .pill-card { background: white; border: 1.5px solid #dde6f2; border-radius: 8px;
+    padding: 10px 14px; display: flex; align-items: center; justify-content: space-between;
+    opacity: .7; }
+  .pill-left { display: flex; align-items: center; gap: 8px; }
+  .pill-label { font-size: 12px; font-weight: 600; color: #555; }
+  .pill-time { font-size: 11px; color: #aaa; }
+  .pill-expand { font-size: 16px; color: #bbb; }
+
+  /* Upcoming */
+  .upcoming { padding: 10px 14px; }
+  .upcoming-label { font-size: 10px; font-weight: 700; color: #aaa; text-transform: uppercase;
+    letter-spacing: .5px; margin-bottom: 8px; }
+  .upcoming-item { display: flex; align-items: center; gap: 8px; padding: 6px 0;
+    border-bottom: 1px solid #eef0f4; }
+  .upcoming-dot { width: 7px; height: 7px; border-radius: 50%; background: #d0d8e4; flex-shrink: 0; }
+  .upcoming-text { font-size: 11.5px; color: #888; }
+  .upcoming-time { font-size: 10.5px; color: #bbb; margin-left: auto; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-logo">
+    <svg viewBox="0 0 28 28" fill="none">
+      <rect width="28" height="28" rx="4" fill="#1a3860"/>
+      <path d="M6 18 L14 8 L22 18" stroke="#f0a500" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="M10 18.5 L18 18.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    Sporty's
+  </div>
+  <div class="topnav-links">
+    <span>My Courses</span><span>All Courses</span><span>Learn To Fly</span>
+  </div>
+  <div class="topnav-right">
+    <span class="fav-btn">☆ Favorite this Scenario</span>
+    <div class="avatar">EP</div>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <!-- Left sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo" style="padding:16px;">
+      <div class="sidebar-logo-text">VFR Mastery</div>
+      <div class="sidebar-logo-sub">by PilotWorkshops</div>
+    </div>
+    <div class="sidebar-item active">
+      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 5h8M4 8h6M4 11h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      View All Scenarios
+    </div>
+    <div class="sidebar-item">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2l1.5 3 3.5.5-2.5 2.5.5 3.5L8 10l-3 1.5.5-3.5L3 5.5l3.5-.5z"/></svg>
+      Favorite Scenarios
+    </div>
+    <div class="sidebar-item">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
+      Mastery Watchlist
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="prog-section">
+      <div class="prog-label">Scenario Progress</div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill"></div></div>
+      <div class="prog-text">1 / 94 scenarios</div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Scenario header -->
+    <div class="scenario-header">
+      <div>
+        <div class="breadcrumb-path">VFR Mastery / Scenarios / Gulf Coast Gauntlet / Listen</div>
+        <div class="scenario-title">Gulf Coast Gauntlet</div>
+      </div>
+      <div class="fav-link">☆ Favorite this Scenario</div>
+    </div>
+
+    <!-- Step progress -->
+    <div class="steps-bar">
+      <div class="steps">
+        <div class="step done"><div class="step-circle">✓</div><div class="step-label">Watch</div></div>
+        <div class="step done"><div class="step-circle">✓</div><div class="step-label">Evaluate</div></div>
+        <div class="step done"><div class="step-circle">✓</div><div class="step-label">Choose</div></div>
+        <div class="step done"><div class="step-circle">✓</div><div class="step-label">Learn</div></div>
+        <div class="step active"><div class="step-circle">5</div><div class="step-label">Listen</div></div>
+        <div class="step"><div class="step-circle">6</div><div class="step-label">Discuss</div></div>
+        <div class="step"><div class="step-circle">7</div><div class="step-label">Quiz</div></div>
+        <div class="step"><div class="step-circle">8</div><div class="step-label">Finish</div></div>
+      </div>
+    </div>
+
+    <!-- Content: audio + sidebar -->
+    <div class="content-area">
+
+      <!-- Audio panel -->
+      <div class="audio-panel">
+        <div class="listen-title">5. LISTEN TO THE ROUNDTABLE</div>
+        <div class="listen-sub">Listen in as our team of instructors discuss and debate the details of this scenario.</div>
+
+        <div class="player">
+          <div class="player-bar-bg"><div class="player-bar-fill"></div></div>
+          <div class="player-controls">
+            <div class="player-time">7:12</div>
+            <div class="player-btns">
+              <div class="player-speed">1x</div>
+              <div class="player-icon">⟨⟨</div>
+              <div class="player-play">▶</div>
+              <div class="player-icon">⟩⟩</div>
+              <div class="player-vol">🔊</div>
+            </div>
+            <div class="player-time">32:30</div>
+          </div>
+        </div>
+
+        <div class="player-actions">
+          <button class="pdf-btn">Quick Summary (PDF)</button>
+          <button class="mp3-btn">Download MP3 Audio</button>
+        </div>
+
+        <div class="instructors">
+          <div class="instructor">
+            <div class="instructor-avatar">CC</div>
+            <div class="instructor-name">Catherine Cavagnaro</div>
+            <div class="instructor-choice">Choice 2</div>
+          </div>
+          <div class="instructor">
+            <div class="instructor-avatar">DG</div>
+            <div class="instructor-name">David Gagliardi</div>
+            <div class="instructor-choice">Choice 1</div>
+          </div>
+          <div class="instructor">
+            <div class="instructor-avatar">BK</div>
+            <div class="instructor-name">Bret Koebbe</div>
+            <div class="instructor-choice">Choice 3</div>
+          </div>
+          <div class="instructor">
+            <div class="instructor-avatar">WM</div>
+            <div class="instructor-name">Wally Moran</div>
+            <div class="instructor-choice">Choice 3</div>
+          </div>
+          <div class="instructor">
+            <div class="instructor-avatar">KP</div>
+            <div class="instructor-name">Kevin Plante</div>
+            <div class="instructor-choice">Choice 3</div>
+          </div>
+          <div class="instructor">
+            <div class="instructor-avatar">ST</div>
+            <div class="instructor-name">Steve Tupper</div>
+            <div class="instructor-choice">Choice 2</div>
+          </div>
+          <div class="instructor">
+            <div class="instructor-avatar moderator">JVW</div>
+            <div class="instructor-name">Jeff Van West</div>
+            <div class="instructor-choice">Moderator</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive sidebar -->
+      <div class="sidebar-panel">
+        <div class="panel-header">
+          <div class="panel-title">Interactive Sidebar</div>
+          <div class="new-pill">✦ NEW</div>
+        </div>
+        <div class="panel-body">
+
+          <!-- Active card: Comfort Poll -->
+          <div class="card">
+            <div class="card-tag">
+              <div class="card-dot poll"></div>
+              COMFORT CHECK
+            </div>
+            <div class="card-body">
+              <div class="card-question">How comfortable are you flying VFR in these conditions?</div>
+              <div class="slider-wrap">
+                <div class="slider-labels"><span>Not at all</span><span>Very comfortable</span></div>
+                <input type="range" class="slider" min="1" max="10" value="6">
+                <div class="slider-val">6 / 10</div>
+              </div>
+              <button class="submit-btn">See how others responded →</button>
+            </div>
+          </div>
+
+          <!-- Collapsed cards -->
+          <div class="pill-card">
+            <div class="pill-left">
+              <div class="card-dot exam" style="width:8px;height:8px;border-radius:50%;"></div>
+              <div class="pill-label">Exam Questions</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="pill-time">~14:00</div>
+              <div class="pill-expand">›</div>
+            </div>
+          </div>
+
+          <div class="pill-card">
+            <div class="pill-left">
+              <div class="card-dot ntsb" style="width:8px;height:8px;border-radius:50%;"></div>
+              <div class="pill-label">NTSB Report</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="pill-time">~19:30</div>
+              <div class="pill-expand">›</div>
+            </div>
+          </div>
+
+          <!-- Upcoming -->
+          <div class="upcoming">
+            <div class="upcoming-label">Coming up</div>
+            <div class="upcoming-item">
+              <div class="upcoming-dot" style="background:#0891b2;"></div>
+              <div class="upcoming-text">Flight Context</div>
+              <div class="upcoming-time">~24:00</div>
+            </div>
+            <div class="upcoming-item">
+              <div class="upcoming-dot" style="background:#27ae60;"></div>
+              <div class="upcoming-text">Personal Minimums</div>
+              <div class="upcoming-time">~29:00</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
